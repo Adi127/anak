@@ -2,7 +2,7 @@
 
 Katalog pribadi foto karya anak beserta cerita (ketik atau rekam suara). Web app (PWA) tanpa server, tanpa akun, tanpa library luar. Semua data tersimpan di browser HP (IndexedDB).
 
-Alamat aplikasi: https://adi127.github.io/karya/
+Alamat aplikasi: https://adi127.github.io/anak/
 
 ## Fitur
 
@@ -23,7 +23,7 @@ Buka http://localhost:8080 di Chrome. Kamera dan mikrofon di HP hanya jalan lewa
 ## Deploy gratis (GitHub Pages)
 
 1. Di repositori ini: Settings > Pages > Source: Deploy from a branch > main, folder / (root) > Save.
-2. Tunggu 1-2 menit, buka `https://adi127.github.io/karya/` di Chrome Android.
+2. Tunggu 1-2 menit, buka `https://adi127.github.io/anak/` di Chrome Android.
 3. Menu titik tiga > Instal aplikasi (atau Tambahkan ke layar utama).
 
 Alternatif: Cloudflare Pages, build command kosong, output directory `/`.
