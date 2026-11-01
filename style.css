@@ -53,3 +53,5 @@ dl{margin:8px 0 0}dt{font-size:.78rem;color:var(--redup);margin-top:8px}dd{margi
 .jepit{position:absolute;top:-12px;left:50%;width:9px;height:20px;border-radius:3px;transform:translateX(-50%);box-shadow:0 1px 2px rgba(0,0,0,.3)}
 .avatar.foto{object-fit:cover;background:var(--aksen2)}
 .penuh-lebar{display:block;width:100%}
+.gantung.kosong{background:transparent;border:2px dashed #d9c4b5;box-shadow:none}
+.slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#d9a58f;background:var(--aksen2);border-radius:4px}
