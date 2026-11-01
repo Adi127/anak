@@ -1,5 +1,5 @@
 'use strict';
-const VERSI = '1.0.0';
+const VERSI = '1.1.0';
 
 /* ---------- Database (IndexedDB) ---------- */
 let db;
@@ -132,27 +132,46 @@ function htmlGrid(daftar, anakMap) {
 const urutTerbaru = (a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (b.dibuat || '').localeCompare(a.dibuat || '');
 
 /* ---------- Beranda ---------- */
+const MASKOT = `<svg viewBox="0 0 80 120" width="60" height="90" aria-hidden="true"><g transform="rotate(8 40 60)"><rect x="22" y="30" width="36" height="76" rx="6" fill="#e8734a"/><rect x="22" y="52" width="36" height="20" fill="#fff8f1"/><path d="M22 30 L40 4 L58 30 Z" fill="#c9552e"/><circle cx="33" cy="86" r="3.2" fill="#2d2622"/><circle cx="47" cy="86" r="3.2" fill="#2d2622"/><path d="M33 95 Q40 101 47 95" stroke="#2d2622" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg>`;
+function htmlJemuran(daftar) {
+  const warna = ['#f6b93b', '#6bbf8a', '#5aa9e6', '#e8734a'], miring = [-3, 2, -2, 3];
+  return `<div class="jemuran"><div class="tali"></div><div class="gantungan">${daftar.map((k, i) => {
+    const ket = k.judul || k.lokasi;
+    return `<a class="gantung" style="--r:${miring[i % 4]}deg" href="#/karya/${k.id}"><i class="jepit" style="background:${warna[i % 4]}"></i><img src="${urlBlob(k.thumb || k.foto)}" alt="${esc(ket)}"><span>${esc(ket)}</span></a>`;
+  }).join('')}</div></div>`;
+}
 async function layarBeranda(id) {
   const [anak, karya, eks, sejak] = await Promise.all([semua('anak'), semua('karya'), getMeta('eksporTerakhir'), getMeta('karyaSejakEkspor')]);
   if (id !== renderId) return;
+  karya.sort(urutTerbaru);
   let h = '';
   const hariLalu = eks ? (Date.now() - new Date(eks).getTime()) / 864e5 : null;
   if (karya.length && ((sejak || 0) >= 10 || (hariLalu === null) || (hariLalu >= 30 && (sejak || 0) > 0))) {
     h += `<div class="info">Data hanya ada di HP ini. ${eks ? 'Cadangan terakhir ' + tglIndo(eks.slice(0, 10)) + '.' : 'Belum pernah dicadangkan.'} <a href="#/pengaturan">Buat cadangan sekarang</a></div>`;
   }
+  let sapa, petunjuk;
+  if (!anak.length) { sapa = 'Selamat datang!'; petunjuk = 'Mulai dengan menambahkan anak, lalu simpan karya pertamanya.'; }
+  else if (!karya.length) { sapa = 'Siap menyimpan!'; petunjuk = 'Ketuk tombol + di bawah untuk menyimpan karya pertama.'; }
+  else {
+    const tempat = new Set(karya.map(k => k.lokasi)).size;
+    sapa = `${karya.length} karya tersimpan`;
+    petunjuk = `Dari ${tempat} tempat. Ketuk + untuk menambah, atau Cari untuk menemukan karya lewat nama tempat.`;
+  }
+  h += `<div class="hero">${MASKOT}<div><div class="hero-judul">${esc(sapa)}</div><div class="redup">${esc(petunjuk)}</div></div></div>`;
+  if (karya.length) h += `<h2>Karya terbaru</h2>` + htmlJemuran(karya.slice(0, 4));
   h += `<h2>Anak</h2>`;
   if (!anak.length) {
-    h += `<div class="kosong">Belum ada anak.<br>Tambahkan dulu untuk mulai menyimpan karya.</div>`;
+    h += `<a class="tombol penuh-lebar" href="#/anak/baru">+ Tambah anak</a>`;
   } else {
     anak.sort((a, b) => a.nama.localeCompare(b.nama));
     h += anak.map(a => {
-      const n = karya.filter(k => k.anakId === a.id).length;
-      return `<div class="kartu"><a class="anak-item" href="#/anak/${a.id}"><div class="avatar">${esc(a.nama.charAt(0).toUpperCase())}</div><div><strong>${esc(a.nama)}</strong><div class="redup">${n} karya${a.lahir ? ' · ' + hitungUsia(a.lahir, hariIni()) : ''}</div></div></a></div>`;
+      const milik = karya.filter(k => k.anakId === a.id);
+      const terakhir = milik[0];
+      const avatar = terakhir ? `<img class="avatar foto" src="${urlBlob(terakhir.thumb || terakhir.foto)}" alt="">` : `<div class="avatar">${esc(a.nama.charAt(0).toUpperCase())}</div>`;
+      return `<div class="kartu"><a class="anak-item" href="#/anak/${a.id}">${avatar}<div><strong>${esc(a.nama)}</strong><div class="redup">${milik.length} karya${a.lahir ? ' · ' + hitungUsia(a.lahir, hariIni()) : ''}</div></div></a></div>`;
     }).join('');
+    h += `<a class="tombol sekunder" href="#/anak/baru">+ Tambah anak</a>`;
   }
-  h += `<a class="tombol sekunder" href="#/anak/baru">+ Tambah anak</a>`;
-  const baru = karya.sort(urutTerbaru).slice(0, 6);
-  if (baru.length) h += `<h2>Karya terbaru</h2>` + htmlGrid(baru);
   main().innerHTML = h;
 }
 
