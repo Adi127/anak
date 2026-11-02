@@ -1,16 +1,19 @@
 'use strict';
-const VERSI = '1.1.1';
+const VERSI = '2.0.0';
 
 /* ---------- Database (IndexedDB) ---------- */
 let db;
 function bukaDB() {
   return new Promise((res, rej) => {
-    const r = indexedDB.open('katalog-karya-anak', 1);
-    r.onupgradeneeded = () => {
+    const r = indexedDB.open('katalog-karya-anak', 2);
+    r.onupgradeneeded = e => {
       const d = r.result;
-      d.createObjectStore('anak', { keyPath: 'id' });
-      d.createObjectStore('karya', { keyPath: 'id' }).createIndex('anakId', 'anakId');
-      d.createObjectStore('meta', { keyPath: 'k' });
+      if (e.oldVersion < 1) {
+        d.createObjectStore('anak', { keyPath: 'id' });
+        d.createObjectStore('karya', { keyPath: 'id' }).createIndex('anakId', 'anakId');
+        d.createObjectStore('meta', { keyPath: 'k' });
+      }
+      if (e.oldVersion < 2) d.createObjectStore('tomb', { keyPath: 'k' });
     };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);
@@ -29,8 +32,17 @@ function tx(store, mode, fn) {
 }
 const semua = s => tx(s, 'readonly', o => o.getAll());
 const ambil = (s, id) => tx(s, 'readonly', o => o.get(id));
-const simpan = (s, v) => tx(s, 'readwrite', o => o.put(v));
-const hapus = (s, id) => tx(s, 'readwrite', o => o.delete(id));
+const simpan = async (s, v) => {
+  const r = await tx(s, 'readwrite', o => o.put(v));
+  if ((s === 'anak' || s === 'karya') && window.jadwalSinkron) window.jadwalSinkron();
+  return r;
+};
+const hapus = async (s, id) => {
+  const lama = s === 'karya' ? await ambil('karya', id) : null;
+  await tx(s, 'readwrite', o => o.delete(id));
+  await tx('tomb', 'readwrite', o => o.put({ k: s + ':' + id, s, id, diubah: new Date().toISOString(), suaraN: lama && lama.suara ? lama.suara.length : 0 }));
+  if (window.jadwalSinkron) window.jadwalSinkron();
+};
 const getMeta = async k => { const r = await ambil('meta', k); return r ? r.v : undefined; };
 const setMeta = (k, v) => simpan('meta', { k, v });
 
@@ -192,7 +204,8 @@ async function layarFormAnak(id) {
     if (!nama) return;
     const ada = (await semua('anak')).some(a => a.nama.toLowerCase() === nama.toLowerCase());
     if (ada) return toast('Nama itu sudah ada');
-    await simpan('anak', { id: uid(), nama, lahir: $('#lahir').value || null, dibuat: new Date().toISOString() });
+    const sekarang = new Date().toISOString();
+    await simpan('anak', { id: uid(), nama, lahir: $('#lahir').value || null, dibuat: sekarang, diubah: sekarang });
     toast('Anak disimpan');
     location.hash = '#/';
   };
@@ -212,7 +225,7 @@ async function layarAnak(id, anakId) {
   main().innerHTML = h;
   $('#ubahA').onclick = async () => {
     const n = prompt('Nama baru:', a.nama);
-    if (n && n.trim()) { a.nama = n.trim().slice(0, 40); await simpan('anak', a); rute(); }
+    if (n && n.trim()) { a.nama = n.trim().slice(0, 40); a.diubah = new Date().toISOString(); await simpan('anak', a); rute(); }
   };
   $('#hapusA').onclick = async () => {
     if (karya.length) return toast('Anak yang masih punya karya tidak bisa dihapus');
@@ -448,8 +461,10 @@ async function layarPengaturan(id) {
     <p class="redup">Data di file akan digabung dengan data yang ada. Tidak ada data yang dihapus.</p>
     <button class="sekunder penuh" id="bImp">Pilih file cadangan</button>
     <input type="file" id="fImp" accept=".json,application/json" hidden>
+    <div id="boxSinkron"></div>
     <p class="redup" style="margin-top:24px">Katalog Karya Anak v${VERSI}</p>`;
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+  if (window.renderSinkron) window.renderSinkron($('#boxSinkron'));
   $('#bEks').onclick = async () => {
     $('#bEks').disabled = true;
     try {
@@ -490,4 +505,5 @@ async function layarPengaturan(id) {
   try { db = await bukaDB(); } catch (e) { main().innerHTML = '<div class="kosong">Penyimpanan browser tidak tersedia. Jangan pakai mode samaran.</div>'; return; }
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   rute();
+  if (window.mulaiSinkron) window.mulaiSinkron();
 })();

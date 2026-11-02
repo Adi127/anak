@@ -34,3 +34,7 @@ Alternatif: Cloudflare Pages, build command kosong, output directory `/`.
 - Data hilang kalau data browser dihapus atau HP hilang. Ekspor cadangan berkala dari menu Cadangan dan simpan file-nya di Google Drive atau laptop.
 - Setiap kali mengubah file aplikasi, naikkan `VERSI` di `sw.js` supaya HP mengunduh versi baru.
 - Repositori publik aman: yang di-upload hanya kode, foto dan data anak tidak pernah masuk GitHub.
+
+## Sinkron online (opsional)
+
+Beberapa HP bisa berbagi karya lewat satu akun keluarga di Supabase (gratis, tanpa kartu). Data tetap utama di HP dan aplikasi tetap jalan offline. Langkah pemasangan ada di [PANDUAN-ONLINE.md](PANDUAN-ONLINE.md). Kalau `config.js` dibiarkan kosong, fitur ini mati dan aplikasi jalan seperti biasa.
