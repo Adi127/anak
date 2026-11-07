@@ -1,5 +1,5 @@
 'use strict';
-const VERSI = '2.0.0';
+const VERSI = '2.1.0';
 
 /* ---------- Database (IndexedDB) ---------- */
 let db;
@@ -40,11 +40,13 @@ const simpan = async (s, v) => {
 const hapus = async (s, id) => {
   const lama = s === 'karya' ? await ambil('karya', id) : null;
   await tx(s, 'readwrite', o => o.delete(id));
-  await tx('tomb', 'readwrite', o => o.put({ k: s + ':' + id, s, id, diubah: new Date().toISOString(), suaraN: lama && lama.suara ? lama.suara.length : 0 }));
+  if (lama && lama._drive && window.tandaiHapusDrive) await window.tandaiHapusDrive(lama.anakId, idDrive(lama._drive));
+  await tx('tomb', 'readwrite', o => o.put({ k: s + ':' + id, s, id, diubah: new Date().toISOString() }));
   if (window.jadwalSinkron) window.jadwalSinkron();
 };
 const getMeta = async k => { const r = await ambil('meta', k); return r ? r.v : undefined; };
 const setMeta = (k, v) => simpan('meta', { k, v });
+const idDrive = dr => dr ? [dr.foto && dr.foto.id, dr.video && dr.video.id].concat((dr.suara || []).map(e => e && e.id)).filter(Boolean) : [];
 
 /* ---------- Alat bantu ---------- */
 const $ = s => document.querySelector(s);
@@ -89,6 +91,38 @@ async function kompres(file, maks, mutu) {
   if (bmp.close) bmp.close();
   return new Promise(res => c.toBlob(res, 'image/jpeg', mutu));
 }
+const GAMBAR_KOSONG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f3e3d3"/><path d="M30 62 L45 44 L56 56 L64 48 L72 62 Z" fill="#e0c3a6"/><circle cx="64" cy="36" r="6" fill="#e0c3a6"/></svg>');
+const srcGbr = k => (k.thumb || k.foto) ? urlBlob(k.thumb || k.foto) : GAMBAR_KOSONG;
+const adaVideo = k => !!(k.video || (k._drive && k._drive.video));
+const MAKS_VIDEO_DETIK = 180, MAKS_VIDEO_BYTE = 300 * 1048576;
+const durasiVideo = f => new Promise(res => {
+  const v = document.createElement('video'), u = URL.createObjectURL(f);
+  v.preload = 'metadata';
+  v.onloadedmetadata = () => { URL.revokeObjectURL(u); res(isFinite(v.duration) ? v.duration : null); };
+  v.onerror = () => { URL.revokeObjectURL(u); res(null); };
+  v.src = u;
+});
+// Satu gambar dari video, dipakai sebagai sampul kalau karya hanya berisi video.
+const posterVideo = blob => new Promise(res => {
+  const v = document.createElement('video'), u = URL.createObjectURL(blob);
+  let selesai = false;
+  const akhir = x => { if (selesai) return; selesai = true; URL.revokeObjectURL(u); res(x); };
+  v.muted = true; v.playsInline = true; v.preload = 'auto';
+  v.onerror = () => akhir(null);
+  v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); };
+  v.onseeked = async () => {
+    try {
+      const r = Math.min(1, 1600 / Math.max(v.videoWidth, v.videoHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(v.videoWidth * r); c.height = Math.round(v.videoHeight * r);
+      c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+      const foto = await new Promise(rs => c.toBlob(rs, 'image/jpeg', 0.85));
+      akhir({ foto, thumb: await kompres(foto, 400, 0.8) });
+    } catch (e) { akhir(null); }
+  };
+  v.src = u;
+  setTimeout(() => akhir(null), 8000);
+});
 const blobKeDataUrl = b => new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(b); });
 const dataUrlKeBlob = async u => (await fetch(u)).blob();
 
@@ -136,9 +170,8 @@ window.addEventListener('hashchange', rute);
 function htmlGrid(daftar, anakMap) {
   if (!daftar.length) return '';
   return `<div class="grid">${daftar.map(k => {
-    const u = urlBlob(k.thumb || k.foto);
     const ket = k.judul || k.lokasi;
-    return `<a href="#/karya/${k.id}"><img src="${u}" alt="${esc(ket)}" loading="lazy"><span class="tag">${esc(ket)}</span></a>`;
+    return `<a href="#/karya/${k.id}"><img src="${srcGbr(k)}" alt="${esc(ket)}" loading="lazy">${adaVideo(k) ? '<i class="vid">&#9654;</i>' : ''}<span class="tag">${esc(ket)}</span></a>`;
   }).join('')}</div>`;
 }
 const urutTerbaru = (a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (b.dibuat || '').localeCompare(a.dibuat || '');
@@ -149,7 +182,7 @@ function htmlJemuran(daftar, linkKosong) {
   const warna = ['#f6b93b', '#6bbf8a', '#5aa9e6', '#e8734a'], miring = [-3, 2, -2, 3];
   let isi = daftar.map((k, i) => {
     const ket = k.judul || k.lokasi;
-    return `<a class="gantung" style="--r:${miring[i % 4]}deg" href="#/karya/${k.id}"><i class="jepit" style="background:${warna[i % 4]}"></i><img src="${urlBlob(k.thumb || k.foto)}" alt="${esc(ket)}"><span>${esc(ket)}</span></a>`;
+    return `<a class="gantung" style="--r:${miring[i % 4]}deg" href="#/karya/${k.id}"><i class="jepit" style="background:${warna[i % 4]}"></i><img src="${srcGbr(k)}" alt="${esc(ket)}"><span>${esc(ket)}</span></a>`;
   }).join('');
   for (let i = daftar.length; i < 4; i++) {
     isi += `<a class="gantung kosong" style="--r:${miring[i % 4]}deg" href="${linkKosong}"><i class="jepit" style="background:${warna[i % 4]}"></i><div class="slot">+</div><span>Karya</span></a>`;
@@ -183,7 +216,7 @@ async function layarBeranda(id) {
     h += anak.map(a => {
       const milik = karya.filter(k => k.anakId === a.id);
       const terakhir = milik[0];
-      const avatar = terakhir ? `<img class="avatar foto" src="${urlBlob(terakhir.thumb || terakhir.foto)}" alt="">` : `<div class="avatar">${esc(a.nama.charAt(0).toUpperCase())}</div>`;
+      const avatar = terakhir ? `<img class="avatar foto" src="${srcGbr(terakhir)}" alt="">` : `<div class="avatar">${esc(a.nama.charAt(0).toUpperCase())}</div>`;
       return `<div class="kartu"><a class="anak-item" href="#/anak/${a.id}">${avatar}<div><strong>${esc(a.nama)}</strong><div class="redup">${milik.length} karya${a.lahir ? ' · ' + hitungUsia(a.lahir, hariIni()) : ''}</div></div></a></div>`;
     }).join('');
     h += `<a class="tombol sekunder" href="#/anak/baru">+ Tambah anak</a>`;
@@ -222,7 +255,9 @@ async function layarAnak(id, anakId) {
   h += karya.length ? htmlGrid(karya) : `<div class="kosong">Belum ada karya untuk ${esc(a.nama)}.</div>`;
   h += `<h2>Data anak</h2><div class="kartu"><div class="redup">Lahir: ${a.lahir ? tglIndo(a.lahir) : '-'}</div>
     <div class="baris" style="margin-top:10px"><button class="sekunder" id="ubahA">Ubah nama</button><button class="bahaya" id="hapusA">Hapus anak</button></div></div>`;
+  h += '<div id="boxDrive"></div>';
   main().innerHTML = h;
+  if (window.renderDriveAnak) window.renderDriveAnak($('#boxDrive'), a);
   $('#ubahA').onclick = async () => {
     const n = prompt('Nama baru:', a.nama);
     if (n && n.trim()) { a.nama = n.trim().slice(0, 40); a.diubah = new Date().toISOString(); await simpan('anak', a); rute(); }
@@ -250,10 +285,22 @@ async function layarFormKarya(id, editId, anakAwal) {
   const anakTerakhir = lama ? lama.anakId : (anakAwal || (await getMeta('anakTerakhir')) || anak[0].id);
   setJudul(lama ? 'Ubah karya' : 'Tambah karya', lama ? '#/karya/' + lama.id : '#/');
 
-  const d = { foto: lama ? lama.foto : null, thumb: lama ? lama.thumb : null, tanggal: lama ? lama.tanggal : hariIni(), suara: lama ? [...(lama.suara || [])] : [] };
+  // Media yang masih di Drive dan belum diunduh ke HP ini tidak boleh diubah dari sini.
+  const dr0 = lama && lama._drive ? lama._drive : null;
+  const nSuara = Math.max(lama ? (lama.suara || []).length : 0, dr0 ? (dr0.suara || []).length : 0);
+  const kurang = !!(lama && dr0 && ((dr0.foto && !lama.foto) || (dr0.suara || []).some((e, i) => e && !(lama.suara || [])[i])));
+  const videoDiDrive = !!(dr0 && dr0.video && !(lama && lama.video));
+  const kunciAnak = !!(dr0 && (kurang || videoDiDrive));
+  const d = {
+    foto: lama ? lama.foto : null, thumb: lama ? lama.thumb : null, tanggal: lama ? lama.tanggal : hariIni(),
+    suara: Array.from({ length: nSuara }, (_, i) => (lama && (lama.suara || [])[i]) || null),
+    suaraDr: Array.from({ length: nSuara }, (_, i) => (dr0 && (dr0.suara || [])[i]) || null),
+    video: lama ? (lama.video || null) : null, videoDihapus: false, yatim: []
+  };
 
   main().innerHTML = `<form id="f">
-    <div class="pilih-foto">
+    ${kurang ? '<div class="info">Foto atau rekaman karya ini masih di Google Drive dan belum diunduh ke HP ini. Hubungkan Drive anak dari halaman anak untuk mengubah foto atau rekaman. Teksnya tetap bisa diubah.</div>' : ''}
+    <div class="pilih-foto" ${kurang ? 'hidden' : ''}>
       <button type="button" class="sekunder" id="bKamera">Foto dengan kamera</button>
       <button type="button" class="sekunder" id="bGaleri">Pilih dari galeri</button>
     </div>
@@ -261,7 +308,7 @@ async function layarFormKarya(id, editId, anakAwal) {
     <input type="file" id="fGaleri" accept="image/*" hidden>
     <img id="prev" alt="" ${d.foto ? `src="${urlBlob(d.foto)}"` : 'hidden'}>
     <label>Anak</label>
-    <select id="anak">${anak.map(a => `<option value="${a.id}" ${a.id === anakTerakhir ? 'selected' : ''}>${esc(a.nama)}</option>`).join('')}</select>
+    <select id="anak" ${kunciAnak ? 'disabled' : ''}>${anak.map(a => `<option value="${a.id}" ${a.id === anakTerakhir ? 'selected' : ''}>${esc(a.nama)}</option>`).join('')}</select>
     <label>Lokasi <small>(nama tempat sehari-hari, misalnya Rumah nenek)</small></label>
     <input id="lokasi" list="lokList" maxlength="80" autocomplete="off" required value="${esc(lama ? lama.lokasi : '')}">
     <datalist id="lokList">${lokasiSaran.map(l => `<option value="${esc(l)}">`).join('')}</datalist>
@@ -269,9 +316,15 @@ async function layarFormKarya(id, editId, anakAwal) {
     <input id="judulK" maxlength="80" value="${esc(lama ? lama.judul : '')}">
     <label>Cerita di balik karya <small>(opsional)</small></label>
     <textarea id="cerita">${esc(lama ? lama.cerita : '')}</textarea>
-    <label>Rekaman suara cerita <small>(opsional)</small></label>
-    <div class="baris"><button type="button" class="sekunder" id="bRek">Mulai rekam</button><span id="rekStatus" class="redup"></span></div>
+    <div ${kurang ? 'hidden' : ''}>
+      <label>Rekaman suara cerita <small>(opsional)</small></label>
+      <div class="baris"><button type="button" class="sekunder" id="bRek">Mulai rekam</button><span id="rekStatus" class="redup"></span></div>
+    </div>
     <div id="daftarSuara"></div>
+    <label>Video <small>(opsional, maksimal 3 menit)</small></label>
+    <div id="boxVideo"></div>
+    <input type="file" id="fVidKamera" accept="video/*" capture="environment" hidden>
+    <input type="file" id="fVidGaleri" accept="video/*" hidden>
     <label>Acara <small>(opsional, misalnya Lomba 17 Agustus)</small></label>
     <input id="acara" list="acrList" maxlength="80" autocomplete="off" value="${esc(lama ? lama.acara : '')}">
     <datalist id="acrList">${acaraSaran.map(l => `<option value="${esc(l)}">`).join('')}</datalist>
@@ -300,10 +353,49 @@ async function layarFormKarya(id, editId, anakAwal) {
   $('#fGaleri').onchange = e => pasangFoto(e.target.files[0]);
 
   const gambarSuara = () => {
-    $('#daftarSuara').innerHTML = d.suara.map((s, i) => `<div class="kartu"><audio controls src="${urlBlob(s)}"></audio><button type="button" class="bahaya" data-i="${i}" style="margin-top:8px">Hapus rekaman</button></div>`).join('');
-    $('#daftarSuara').querySelectorAll('button').forEach(b => b.onclick = () => { d.suara.splice(+b.dataset.i, 1); gambarSuara(); });
+    $('#daftarSuara').innerHTML = d.suara.map((s, i) => s
+      ? `<div class="kartu"><audio controls src="${urlBlob(s)}"></audio>${kurang ? '' : `<button type="button" class="bahaya" data-i="${i}" style="margin-top:8px">Hapus rekaman</button>`}</div>`
+      : '<div class="kartu redup">Rekaman ada di Google Drive, belum diunduh ke HP ini.</div>').join('');
+    $('#daftarSuara').querySelectorAll('button').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if (d.suaraDr[i]) d.yatim.push(d.suaraDr[i].id);
+      d.suara.splice(i, 1); d.suaraDr.splice(i, 1);
+      gambarSuara();
+    });
   };
   gambarSuara();
+
+  const gambarVideo = () => {
+    const el = $('#boxVideo');
+    if (d.video) {
+      el.innerHTML = `<div class="kartu"><video controls playsinline preload="metadata" src="${urlBlob(d.video)}"></video><div class="redup">${(d.video.size / 1048576).toFixed(1)} MB</div><button type="button" class="bahaya" id="bHapusVid" style="margin-top:8px">Hapus video</button></div>`;
+      $('#bHapusVid').onclick = () => { d.video = null; d.videoDihapus = true; gambarVideo(); };
+    } else if (videoDiDrive && !d.videoDihapus) {
+      el.innerHTML = '<div class="kartu redup">Video karya ini ada di Google Drive. Buka halaman karya untuk mengunduh dan memutarnya.</div>';
+    } else {
+      el.innerHTML = '<div class="pilih-foto"><button type="button" class="sekunder" id="bVidKamera">Rekam video</button><button type="button" class="sekunder" id="bVidGaleri">Pilih video</button></div>';
+      $('#bVidKamera').onclick = () => $('#fVidKamera').click();
+      $('#bVidGaleri').onclick = () => $('#fVidGaleri').click();
+    }
+  };
+  gambarVideo();
+  const pasangVideo = async file => {
+    if (!file) return;
+    if (file.size > MAKS_VIDEO_BYTE) return toast('Video terlalu besar (maksimal 300 MB)');
+    const dur = await durasiVideo(file);
+    if (dur && dur > MAKS_VIDEO_DETIK + 5) return toast('Video terlalu panjang (maksimal 3 menit)');
+    if (!d.foto) {
+      const p = await posterVideo(file);
+      if (!p) return toast('Sampul video tidak bisa dibuat. Pilih foto dulu, lalu pilih videonya lagi.');
+      d.foto = p.foto; d.thumb = p.thumb;
+      const pv = $('#prev'); pv.src = urlBlob(d.foto); pv.hidden = false;
+    }
+    d.video = new Blob([file], { type: file.type || 'video/mp4' });
+    d.videoDihapus = false;
+    gambarVideo();
+  };
+  $('#fVidKamera').onchange = e => pasangVideo(e.target.files[0]);
+  $('#fVidGaleri').onchange = e => pasangVideo(e.target.files[0]);
 
   let rec = null, stream = null, chunks = [], timer = null, detik = 0;
   $('#bRek').onclick = async () => {
@@ -319,6 +411,7 @@ async function layarFormKarya(id, editId, anakAwal) {
       clearInterval(timer);
       stream.getTracks().forEach(t => t.stop());
       d.suara.push(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
+      d.suaraDr.push(null);
       rec = null;
       $('#bRek').textContent = 'Mulai rekam';
       $('#rekStatus').textContent = '';
@@ -338,14 +431,23 @@ async function layarFormKarya(id, editId, anakAwal) {
   $('#f').onsubmit = async e => {
     e.preventDefault();
     if (rec) return toast('Hentikan rekaman dulu');
-    if (!d.foto) return toast('Pilih atau ambil foto dulu');
+    if (!d.foto && !kurang) return toast('Pilih foto atau video dulu');
     const lokasi = $('#lokasi').value.trim();
     if (!lokasi) return toast('Lokasi wajib diisi');
     $('#bSimpan').disabled = true;
+    const anakBaru = $('#anak').value;
+    let yatim = d.yatim.slice(), drBaru = null;
+    if (dr0) {
+      if (lama.anakId !== anakBaru) yatim = idDrive(dr0);   // pindah anak: media diunggah ulang ke Drive anak baru
+      else {
+        if (d.videoDihapus && dr0.video) yatim.push(dr0.video.id);
+        drBaru = Object.assign({}, dr0, { suara: d.suaraDr.slice(), video: d.videoDihapus ? null : dr0.video });
+      }
+    }
     const rec2 = {
       id: lama ? lama.id : uid(),
-      anakId: $('#anak').value,
-      foto: d.foto, thumb: d.thumb,
+      anakId: anakBaru,
+      foto: d.foto, thumb: d.thumb, video: d.video,
       lokasi,
       judul: $('#judulK').value.trim(),
       cerita: $('#cerita').value.trim(),
@@ -356,7 +458,9 @@ async function layarFormKarya(id, editId, anakAwal) {
       dibuat: lama ? lama.dibuat : new Date().toISOString(),
       diubah: new Date().toISOString()
     };
+    if (drBaru) rec2._drive = drBaru;
     try {
+      if (yatim.length && window.tandaiHapusDrive) await window.tandaiHapusDrive(lama.anakId, yatim);
       await simpan('karya', rec2);
       await setMeta('anakTerakhir', rec2.anakId);
       if (!lama) await setMeta('karyaSejakEkspor', ((await getMeta('karyaSejakEkspor')) || 0) + 1);
@@ -378,7 +482,12 @@ async function layarDetail(id, karyaId) {
   if (id !== renderId) return;
   setJudul(k.judul || k.lokasi, a ? '#/anak/' + a.id : '#/');
   const usia = a && a.lahir ? hitungUsia(a.lahir, k.tanggal) : '';
-  main().innerHTML = `<img class="foto-besar" src="${urlBlob(k.foto)}" alt="${esc(k.judul || k.lokasi)}">
+  const dr = k._drive || {};
+  const drFoto = !k.foto && dr.foto, drVideo = !k.video && dr.video;
+  const MB = e => e && e.size ? ` (${(e.size / 1048576).toFixed(1)} MB)` : '';
+  main().innerHTML = `${k.foto ? `<img class="foto-besar" src="${urlBlob(k.foto)}" alt="${esc(k.judul || k.lokasi)}">` : `<div class="kartu" id="boxFoto"><img class="foto-besar" src="${GAMBAR_KOSONG}" alt=""><div class="redup" id="boxFotoTeks" style="margin-top:8px"></div></div>`}
+    ${k.video ? `<div class="kartu" style="margin-top:12px"><div class="redup">Video</div><video controls playsinline preload="metadata" ${k.thumb ? `poster="${urlBlob(k.thumb)}"` : ''} src="${urlBlob(k.video)}"></video></div>` : ''}
+    ${drVideo ? '<div class="kartu" style="margin-top:12px" id="boxVid"><div class="redup">Video</div><div id="boxVidTeks" style="margin:6px 0"></div></div>' : ''}
     <div class="kartu" style="margin-top:12px"><dl style="margin:0">
       <dt>Anak</dt><dd>${esc(a ? a.nama : '-')}${usia ? ' · ' + usia : ''}</dd>
       <dt>Lokasi</dt><dd>${esc(k.lokasi)}</dd>
@@ -387,13 +496,36 @@ async function layarDetail(id, karyaId) {
       ${k.isi && k.isi.length ? `<dt>Isi gambar</dt><dd>${esc(k.isi.join(', '))}</dd>` : ''}
       ${k.cerita ? `<dt>Cerita</dt><dd style="white-space:pre-wrap">${esc(k.cerita)}</dd>` : '<dt>Cerita</dt><dd class="redup">Belum ada cerita</dd>'}
     </dl></div>
-    ${(k.suara || []).map(s => `<div class="kartu"><div class="redup">Rekaman cerita</div><audio controls src="${urlBlob(s)}"></audio></div>`).join('')}
+    ${(k.suara || []).filter(Boolean).map(s => `<div class="kartu"><div class="redup">Rekaman cerita</div><audio controls src="${urlBlob(s)}"></audio></div>`).join('')}
     <div class="baris" style="flex-wrap:wrap">
       <a class="tombol" href="#/ubah/${k.id}">Ubah</a>
-      <button class="sekunder" id="bUnduh">Simpan foto</button>
+      ${k.foto ? '<button class="sekunder" id="bUnduh">Simpan foto</button>' : ''}
       <button class="bahaya" id="bHapus">Hapus</button>
     </div>`;
-  $('#bUnduh').onclick = () => unduh(k.foto, `karya-${(a ? a.nama : 'anak').replace(/\W+/g, '-')}-${k.tanggal}.jpg`);
+  if (k.foto) $('#bUnduh').onclick = () => unduh(k.foto, `karya-${(a ? a.nama : 'anak').replace(/\W+/g, '-')}-${k.tanggal}.jpg`);
+  // Media yang masih di Google Drive anak: ajak menghubungkan, atau unduh video saat diminta.
+  const st = window.driveStatus ? window.driveStatus(k.anakId) : 'mati';
+  const tombolHub = (el, teks) => {
+    el.innerHTML = `${teks}<div class="baris" style="margin-top:8px"><button type="button" id="bHub${el.id}">${st === 'ulang' ? 'Hubungkan ulang Drive' : 'Hubungkan Google Drive'}</button></div>`;
+    $('#bHub' + el.id).onclick = async () => { if (await window.hubungkanDrive(k.anakId)) setTimeout(rute, 1500); };
+  };
+  if (drFoto) {
+    const el = $('#boxFotoTeks');
+    if (st === 'ok') el.textContent = 'Foto sedang diunduh dari Drive. Tarik layar ke bawah atau buka lagi sebentar lagi.';
+    else if (st === 'mati') el.textContent = 'Foto ini ada di Google Drive anak, tetapi Drive belum diaktifkan di aplikasi ini.';
+    else tombolHub(el, `Foto ini ada di Google Drive ${esc(a ? a.nama : 'anak')}.`);
+  }
+  if (drVideo) {
+    const el = $('#boxVidTeks');
+    if (st === 'ok') {
+      el.innerHTML = `<button type="button" id="bVidUnduh">Unduh dan putar video${MB(dr.video)}</button>`;
+      $('#bVidUnduh').onclick = async () => {
+        $('#bVidUnduh').disabled = true; $('#bVidUnduh').textContent = 'Mengunduh video...';
+        try { await window.unduhVideoDrive(k); rute(); } catch (e) { toast('Gagal mengunduh video: ' + (e.message || e)); $('#bVidUnduh').disabled = false; $('#bVidUnduh').textContent = 'Coba unduh lagi'; }
+      };
+    } else if (st === 'mati') el.textContent = 'Video ini ada di Google Drive anak, tetapi Drive belum diaktifkan di aplikasi ini.';
+    else tombolHub(el, `Video${MB(dr.video)} ada di Google Drive ${esc(a ? a.nama : 'anak')}.`);
+  }
   $('#bHapus').onclick = async () => {
     if (confirm('Hapus karya ini beserta ceritanya?')) { await hapus('karya', k.id); toast('Karya dihapus'); location.hash = a ? '#/anak/' + a.id : '#/'; }
   };
@@ -455,7 +587,7 @@ async function layarPengaturan(id) {
   main().innerHTML = `<div class="kartu"><strong>${anak.length}</strong> anak, <strong>${karya.length}</strong> karya<div class="redup">${ruang}</div>
     <div class="redup">Cadangan terakhir: ${eks ? tglIndo(eks.slice(0, 10)) : 'belum pernah'}</div>
     <div class="redup">Penyimpanan permanen: ${permanen ? 'aktif' : 'belum diizinkan browser'}</div></div>
-    <div class="info">Semua data hanya tersimpan di browser HP ini. Kalau data browser dihapus atau HP hilang, data ikut hilang. Buat cadangan secara berkala dan simpan file-nya di tempat lain (Google Drive, laptop).</div>
+    <div class="info">Semua data hanya tersimpan di browser HP ini. Kalau data browser dihapus atau HP hilang, data ikut hilang. Buat cadangan secara berkala dan simpan file-nya di tempat lain (Google Drive, laptop). Video tidak ikut file cadangan karena ukurannya besar; simpan videonya lewat Google Drive anak.</div>
     <button class="penuh" id="bEks">Ekspor cadangan</button>
     <h2>Pulihkan dari cadangan</h2>
     <p class="redup">Data di file akan digabung dengan data yang ada. Tidak ada data yang dihapus.</p>
@@ -470,7 +602,8 @@ async function layarPengaturan(id) {
     try {
       const out = { aplikasi: 'katalog-karya-anak', format: 1, dibuat: new Date().toISOString(), anak: await semua('anak'), karya: [] };
       for (const k of await semua('karya')) {
-        out.karya.push({ ...k, foto: await blobKeDataUrl(k.foto), thumb: k.thumb ? await blobKeDataUrl(k.thumb) : null, suara: await Promise.all((k.suara || []).map(blobKeDataUrl)) });
+        const { video, ...tanpaVideo } = k;   // video terlalu besar untuk file cadangan, aman di Drive
+        out.karya.push({ ...tanpaVideo, foto: k.foto ? await blobKeDataUrl(k.foto) : null, thumb: k.thumb ? await blobKeDataUrl(k.thumb) : null, suara: await Promise.all((k.suara || []).map(x => x ? blobKeDataUrl(x) : null)) });
       }
       unduh(new Blob([JSON.stringify(out)], { type: 'application/json' }), `cadangan-karya-anak-${hariIni()}.json`);
       await setMeta('eksporTerakhir', new Date().toISOString());
@@ -492,7 +625,7 @@ async function layarPengaturan(id) {
         const ada = await ambil('karya', k.id);
         if (ada && (ada.diubah || '') >= (k.diubah || '')) continue;
         if (!ada) nK++;
-        await simpan('karya', { ...k, foto: await dataUrlKeBlob(k.foto), thumb: k.thumb ? await dataUrlKeBlob(k.thumb) : null, suara: await Promise.all((k.suara || []).map(dataUrlKeBlob)) });
+        await simpan('karya', { ...k, foto: k.foto ? await dataUrlKeBlob(k.foto) : null, thumb: k.thumb ? await dataUrlKeBlob(k.thumb) : null, suara: await Promise.all((k.suara || []).map(x => x ? dataUrlKeBlob(x) : null)), video: ada && ada.video ? ada.video : null });
       }
       toast(`Dipulihkan: ${nA} anak, ${nK} karya baru`);
       rute();
