@@ -38,3 +38,7 @@ Alternatif: Cloudflare Pages, build command kosong, output directory `/`.
 ## Sinkron online (opsional)
 
 Beberapa HP bisa berbagi karya lewat satu akun keluarga di Supabase (gratis, tanpa kartu). Data tetap utama di HP dan aplikasi tetap jalan offline. Langkah pemasangan ada di [PANDUAN-ONLINE.md](PANDUAN-ONLINE.md). Kalau `config.js` dibiarkan kosong, fitur ini mati dan aplikasi jalan seperti biasa.
+
+## Video dan Google Drive per anak
+
+Karya bisa berisi video (maksimal 3 menit). Foto, rekaman, dan video disimpan di Google Drive masing-masing anak, supaya kelak tiap anak memegang file miliknya sendiri. Cara pemasangan ada di [PANDUAN-DRIVE.md](PANDUAN-DRIVE.md).
