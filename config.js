@@ -7,5 +7,5 @@
 window.KONFIG = {
   url: 'https://opolmilfruihxwwcbinw.supabase.co',
   kunci: 'sb_publishable_DasoWkGe4cBuPxWYcucXJQ_c4S_y8r5',
-  googleClientId: ''
+  googleClientId: '856541198471-170eananperrguo9flnu5da9t0amrp5t.apps.googleusercontent.com'
 };

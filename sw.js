@@ -1,6 +1,6 @@
 'use strict';
 // Naikkan VERSI setiap kali file aplikasi berubah, supaya HP mengunduh versi baru.
-const VERSI = 'kka-2.1.2';
+const VERSI = 'kka-2.1.3';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'sync.js', 'config.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
