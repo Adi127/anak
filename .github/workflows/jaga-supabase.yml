@@ -1,0 +1,30 @@
+# Menyapa Supabase seminggu dua kali supaya proyek gratis tidak dijeda karena sepi.
+# Hanya membaca satu baris dari tabel anak memakai kunci publik yang memang ada di config.js.
+# Tanpa login, hasilnya kosong (aturan keamanan tetap berlaku), tetapi permintaan itu
+# dihitung sebagai aktivitas database.
+name: Jaga Supabase tetap aktif
+
+on:
+  schedule:
+    - cron: '17 2 * * 1'
+    - cron: '17 2 * * 4'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  sapa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Sapa Supabase
+        run: |
+          kode=$(curl -sS -m 30 -o /tmp/hasil.txt -w '%{http_code}' \
+            'https://opolmilfruihxwwcbinw.supabase.co/rest/v1/anak?select=id&limit=1' \
+            -H 'apikey: sb_publishable_DasoWkGe4cBuPxWYcucXJQ_c4S_y8r5')
+          echo "HTTP $kode"
+          cat /tmp/hasil.txt
+          if [ "$kode" != "200" ]; then
+            echo "Supabase tidak menjawab 200. Cek apakah proyek dijeda di dasbor Supabase."
+            exit 1
+          fi
