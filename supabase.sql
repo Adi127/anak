@@ -37,13 +37,4 @@ create policy "karya milik sendiri" on public.karya
   using (user_id = auth.uid())
   with check (user_id = auth.uid());
 
--- Tempat foto dan rekaman: privat, dan setiap akun hanya bisa mengakses foldernya sendiri.
-insert into storage.buckets (id, name, public)
-values ('media', 'media', false)
-on conflict (id) do nothing;
-
-drop policy if exists "media milik sendiri" on storage.objects;
-create policy "media milik sendiri" on storage.objects
-  for all to authenticated
-  using (bucket_id = 'media' and (storage.foldername(name))[1] = auth.uid()::text)
-  with check (bucket_id = 'media' and (storage.foldername(name))[1] = auth.uid()::text);
+-- Foto, rekaman, dan video tidak disimpan di Supabase. Semuanya ada di Google Drive tiap anak (lihat PANDUAN-DRIVE.md).
