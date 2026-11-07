@@ -1,4 +1,4 @@
-:root{--bg:#fff8f1;--kartu:#fff;--teks:#2d2622;--redup:#7a6c63;--aksen:#e8734a;--aksen2:#fbe3d8;--garis:#f0e1d6;--bahaya:#c0392b}
+:root{--bg:#f4f6f8;--kartu:#fff;--teks:#1e293b;--redup:#64748b;--aksen:#475569;--aksen2:#e2e8f0;--garis:#dde3ea;--bahaya:#c0392b}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 #bar{position:sticky;top:0;z-index:5;background:var(--aksen);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:8px}
@@ -38,14 +38,14 @@ audio,video{width:100%;margin-top:6px}
 .chip.on{background:var(--aksen);color:#fff}
 .info{background:#fff3cd;border:1px solid #f0d98a;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:.92rem}
 .rek{color:var(--bahaya);font-weight:700}
-#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#2d2622;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%;text-align:center;z-index:10}
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%;text-align:center;z-index:10}
 #toast.tampil{opacity:1}
 dl{margin:8px 0 0}dt{font-size:.78rem;color:var(--redup);margin-top:8px}dd{margin:0}
 .hero{display:flex;align-items:center;gap:14px;background:var(--aksen2);border-radius:18px;padding:14px 16px;margin-bottom:6px}
 .hero svg{flex:none}
 .hero-judul{font-weight:800;font-size:1.15rem;margin-bottom:2px}
 .jemuran{position:relative;padding-top:6px;margin-bottom:6px}
-.tali{position:absolute;left:-6px;right:-6px;top:10px;height:3px;border-radius:3px;background:#b9a597}
+.tali{position:absolute;left:-6px;right:-6px;top:10px;height:3px;border-radius:3px;background:#94a3b8}
 .gantungan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-top:6px}
 .gantung{position:relative;display:block;background:#fff;border:1px solid var(--garis);border-radius:8px;padding:6px 6px 4px;margin-top:6px;text-decoration:none;color:inherit;transform:rotate(var(--r,0deg));box-shadow:0 2px 5px rgba(0,0,0,.12)}
 .gantung img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;display:block}
@@ -53,6 +53,6 @@ dl{margin:8px 0 0}dt{font-size:.78rem;color:var(--redup);margin-top:8px}dd{margi
 .jepit{position:absolute;top:-12px;left:50%;width:9px;height:20px;border-radius:3px;transform:translateX(-50%);box-shadow:0 1px 2px rgba(0,0,0,.3)}
 .avatar.foto{object-fit:cover;background:var(--aksen2)}
 .penuh-lebar{display:block;width:100%}
-.gantung.kosong{background:transparent;border:2px dashed #d9c4b5;box-shadow:none}
-.slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#d9a58f;background:var(--aksen2);border-radius:4px}
+.gantung.kosong{background:transparent;border:2px dashed #cbd5e1;box-shadow:none}
+.slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#94a3b8;background:var(--aksen2);border-radius:4px}
 .grid .vid{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:.6rem;font-style:normal;display:flex;align-items:center;justify-content:center;padding-left:2px}

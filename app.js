@@ -177,9 +177,9 @@ function htmlGrid(daftar, anakMap) {
 const urutTerbaru = (a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (b.dibuat || '').localeCompare(a.dibuat || '');
 
 /* ---------- Beranda ---------- */
-const MASKOT = `<svg viewBox="0 0 80 120" width="60" height="90" aria-hidden="true"><g transform="rotate(8 40 60)"><rect x="22" y="30" width="36" height="76" rx="6" fill="#e8734a"/><rect x="22" y="52" width="36" height="20" fill="#fff8f1"/><path d="M22 30 L40 4 L58 30 Z" fill="#c9552e"/><circle cx="33" cy="86" r="3.2" fill="#2d2622"/><circle cx="47" cy="86" r="3.2" fill="#2d2622"/><path d="M33 95 Q40 101 47 95" stroke="#2d2622" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg>`;
+const MASKOT = `<svg viewBox="0 0 80 120" width="60" height="90" aria-hidden="true"><g transform="rotate(8 40 60)"><rect x="22" y="30" width="36" height="76" rx="6" fill="#475569"/><rect x="22" y="52" width="36" height="20" fill="#f4f6f8"/><path d="M22 30 L40 4 L58 30 Z" fill="#334155"/><circle cx="33" cy="86" r="3.2" fill="#f4f6f8"/><circle cx="47" cy="86" r="3.2" fill="#f4f6f8"/><path d="M33 95 Q40 101 47 95" stroke="#f4f6f8" stroke-width="2.4" fill="none" stroke-linecap="round"/></g></svg>`;
 function htmlJemuran(daftar, linkKosong) {
-  const warna = ['#f6b93b', '#6bbf8a', '#5aa9e6', '#e8734a'], miring = [-3, 2, -2, 3];
+  const warna = ['#f6b93b', '#6bbf8a', '#5aa9e6', '#b58de0'], miring = [-3, 2, -2, 3];
   let isi = daftar.map((k, i) => {
     const ket = k.judul || k.lokasi;
     return `<a class="gantung" style="--r:${miring[i % 4]}deg" href="#/karya/${k.id}"><i class="jepit" style="background:${warna[i % 4]}"></i><img src="${srcGbr(k)}" alt="${esc(ket)}"><span>${esc(ket)}</span></a>`;
