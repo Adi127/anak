@@ -5,7 +5,7 @@
 // Semua nilai ini memang boleh publik; data dilindungi aturan Supabase dan izin akun Google.
 // Setiap kali file ini diubah, naikkan VERSI di sw.js supaya HP memuat versi baru.
 window.KONFIG = {
-  url: '',
-  kunci: '',
+  url: 'https://opolmilfruihxwwcbinw.supabase.co',
+  kunci: 'sb_publishable_DasoWkGe4cBuPxWYcucXJQ_c4S_y8r5',
   googleClientId: ''
 };
