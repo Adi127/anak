@@ -368,11 +368,12 @@
   /* ---------- Sambungan Drive: tombol dan tampilan ---------- */
   window.driveAktif = () => DRIVE_SIAP;
   window.driveStatus = anakId => !DRIVE_SIAP ? 'mati' : !bacaDrv(anakId) ? 'belum' : tersambung(anakId) ? 'ok' : 'ulang';
-  async function hubungkan(anakId) {
+  async function hubungkan(anakId, ganti) {
     const a = await ambil('anak', anakId);
     if (!a) return;
     const lama = bacaDrv(anakId) || {};
-    const hint = (a.drive && a.drive.email) || lama.email || '';
+    // Tombol "Ganti akun" tidak boleh membawa email lama, supaya Google menampilkan daftar akun.
+    const hint = ganti ? '' : ((a.drive && a.drive.email) || lama.email || '');
     let r;
     try { r = await mintaToken(hint); } catch (e) { toast(e.message); return false; }
     let email = '';
@@ -398,10 +399,10 @@
     return `Belum terhubung${email ? ' di HP ini (akun ' + esc(email) + ')' : ''}. Foto, rekaman, dan video baru tersimpan di HP ini.`;
   };
   function tombolDrive(a, st) {
-    return `<div class="baris" style="margin-top:8px"><button type="button" class="${st === 'ok' ? 'sekunder' : ''}" data-hub="${a.id}">${st === 'ok' ? 'Ganti akun' : st === 'ulang' ? 'Hubungkan ulang' : 'Hubungkan Google Drive'}</button>${st !== 'belum' ? `<button type="button" class="sekunder" data-put="${a.id}">Putuskan</button>` : ''}</div>`;
+    return `<div class="baris" style="margin-top:8px"><button type="button" class="${st === 'ok' ? 'sekunder' : ''}" data-hub="${a.id}"${st === 'ok' ? ' data-ganti="1"' : ''}>${st === 'ok' ? 'Ganti akun' : st === 'ulang' ? 'Hubungkan ulang' : 'Hubungkan Google Drive'}</button>${st !== 'belum' ? `<button type="button" class="sekunder" data-put="${a.id}">Putuskan</button>` : ''}</div>`;
   }
   function pasangTombolDrive(el) {
-    el.querySelectorAll('[data-hub]').forEach(b => b.onclick = () => hubungkan(b.dataset.hub));
+    el.querySelectorAll('[data-hub]').forEach(b => b.onclick = () => hubungkan(b.dataset.hub, b.dataset.ganti === '1'));
     el.querySelectorAll('[data-put]').forEach(b => b.onclick = () => putuskan(b.dataset.put));
   }
   let kotakAnak = null;   // halaman satu anak
