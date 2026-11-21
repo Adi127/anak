@@ -6,8 +6,7 @@ name: Jaga Supabase tetap aktif
 
 on:
   schedule:
-    - cron: '17 2 * * 1'
-    - cron: '17 2 * * 4'
+    - cron: '17 2 * * *'
   workflow_dispatch:
 
 permissions: {}
