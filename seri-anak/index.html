@@ -279,6 +279,8 @@ body.angka .player{background:linear-gradient(180deg,#9a7bd6,#7a5bb5);border-top
 .apt.ico img{height:150px;width:auto;object-fit:contain}
 .apt.chp{font-size:14.5px;font-weight:900;background:#fff;border:2px solid var(--c,#7a5bb5);border-radius:999px;padding:7px 13px;color:#3b2a63;line-height:1.1;box-shadow:0 3px 8px rgba(59,42,99,.12)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.mbtn{position:fixed;right:12px;bottom:150px;z-index:45;width:46px;height:46px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:22px;cursor:pointer;font-family:inherit}
+.mbtn.off{opacity:.6;filter:grayscale(1)}
 </style>
 </head>
 <body>
@@ -300,12 +302,13 @@ body.angka .player{background:linear-gradient(180deg,#9a7bd6,#7a5bb5);border-top
   <div id="views"></div>
 </div>
 
+<button class="mbtn off" id="mbtn" aria-label="Musik latar">🎵</button>
 <div class="veil" id="veil"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="st">
   <div class="grab"></div><button class="x" id="close" aria-label="Tutup">×</button>
   <div class="tagline" id="sn"></div>
   <h3 id="st"></h3>
-  <div id="g-player" style="display:none"><div class="applayer" id="applayer"><div class="apstage"><div id="apin" style="display:contents"></div><button class="apcover" id="apcover"><div class="pl">▶</div><span>Putar video</span></button></div><div class="apcap" id="apcap"></div><div class="apctrl"><button class="ghost" id="apprev" aria-label="Adegan sebelumnya">⏮</button><button id="applay" aria-label="Putar atau jeda">▶</button><button class="ghost" id="apnext" aria-label="Adegan berikutnya">⏭</button><div class="apdots" id="apdots"></div><button class="ghost" id="apvoice" aria-label="Suara narasi">🔇</button></div></div></div>
+  <div id="g-player" style="display:none"><div class="applayer" id="applayer"><div class="apstage"><div id="apin" style="display:contents"></div><button class="apcover" id="apcover"><div class="pl">▶</div><span>Putar video</span></button></div><div class="apcap" id="apcap"></div><div class="apctrl"><button class="ghost" id="apprev" aria-label="Adegan sebelumnya">⏮</button><button id="applay" aria-label="Putar atau jeda">▶</button><button class="ghost" id="apnext" aria-label="Adegan berikutnya">⏭</button><div class="apdots" id="apdots"></div><button class="ghost" id="apvsel" aria-label="Ganti suara">🎙️</button><button class="ghost" id="apvoice" aria-label="Suara narasi">🔇</button></div></div></div>
   <div class="demo" id="demo"><div id="ico"></div><button class="btn alt go" id="go">Coba!</button></div>
   <span class="adult" id="adult"></span>
   <div id="g-mats"><div class="h" id="h-mats"></div><div class="mats" id="mats"></div></div>
@@ -694,7 +697,15 @@ function apStop(){
   if(AP)AP.playing=false;
 }
 function apPlayBtn(){const b=$('#applay');if(b&&AP)b.textContent=AP.playing?'❚❚':'▶'}
-function apSpeak(t){try{if(!AP.voice||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='id-ID';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+let VOICES=[],VI=-1;
+function loadVoices(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^id([-_]|$)/i.test(v.lang));if(VI<0||VI>=VOICES.length){let sv=null;try{sv=localStorage.getItem('voiceName')}catch(e){}const f=VOICES.findIndex(v=>v.name===sv);if(f>=0)VI=f;else{let b=-1,bs=-1;VOICES.forEach((v,i)=>{let sc=0;if(/natural|neural|online/i.test(v.name))sc+=6;if(/google/i.test(v.name))sc+=4;if(/gadis|damayanti|andini|siti|female|wanita/i.test(v.name))sc+=2;if(!v.localService)sc+=1;if(sc>bs){bs=sc;b=i}});VI=b}}}catch(e){}}
+try{loadVoices();speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
+function apSpeak(t){try{if(!AP.voice||!window.speechSynthesis)return;speechSynthesis.cancel();if(!VOICES.length)loadVoices();
+  const parts=t.match(/[^.!?]+[.!?]*/g)||[t];
+  parts.forEach(p=>{p=p.trim();if(!p)return;const u=new SpeechSynthesisUtterance(p);u.lang='id-ID';if(VOICES[VI])u.voice=VOICES[VI];
+    const ex=/!$/.test(p),q=/\?$/.test(p);u.rate=ex?.98:.9;u.pitch=ex?1.2:q?1.15:1.08;u.volume=1;speechSynthesis.speak(u)})}catch(e){}}
+function apVoiceNext(){try{if(!VOICES.length)loadVoices();if(!VOICES.length){say('Perangkat ini hanya punya satu suara bahasa Indonesia.');return}VI=(VI+1)%VOICES.length;try{localStorage.setItem('voiceName',VOICES[VI].name)}catch(e){}
+  say('Suara: '+VOICES[VI].name);const was=AP.voice;AP.voice=true;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Halo teman-teman, ayo belajar bersama!');u.lang='id-ID';u.voice=VOICES[VI];u.pitch=1.1;u.rate=.92;speechSynthesis.speak(u);AP.voice=was}catch(e){}}
 function apShow(i,play){
   if(AP.timer){clearTimeout(AP.timer);AP.timer=null}
   const sc=AP.sc[i];AP.i=i;
@@ -728,7 +739,29 @@ $('#applay').onclick=()=>{
 $('#apprev').onclick=()=>{if(AP)apShow(Math.max(0,AP.i-1),AP.playing)};
 $('#apnext').onclick=()=>{if(AP)apShow(Math.min(AP.sc.length-1,AP.i+1),AP.playing)};
 $('#apdots').onclick=e=>{const i=e.target.closest('i');if(i&&AP)apShow(+i.dataset.k,AP.playing)};
+$('#apvsel').onclick=()=>{if(AP)apVoiceNext()};
 $('#apvoice').onclick=e=>{if(!AP)return;AP.voice=!AP.voice;e.target.textContent=AP.voice?'🔊':'🔇';e.target.classList.toggle('on',AP.voice);if(!AP.voice){try{speechSynthesis.cancel()}catch(_){}}};
+
+/* =================== MUSIK LATAR (dibuat langsung di browser) =================== */
+const MUS={ctx:null,g:null,timer:null,step:0,next:0,want:true,duck:false,started:false};
+const MEL=[72,0,76,0,79,76,72,0,74,0,77,0,81,77,74,0,76,0,79,0,83,79,76,0,79,77,76,74,72,0,0,0];
+const BAS=[48,53,55,48];
+const mhz=m=>440*Math.pow(2,(m-69)/12);
+function musNote(m,t,d,type,vol){const o=MUS.ctx.createOscillator(),g=MUS.ctx.createGain();o.type=type;o.frequency.value=mhz(m);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g);g.connect(MUS.g);o.start(t);o.stop(t+d+0.05)}
+function musTick(){if(!MUS.ctx)return;const e=0.27;while(MUS.next<MUS.ctx.currentTime+0.3){const i=MUS.step%32,t=MUS.next;
+  if(MEL[i])musNote(MEL[i],t,e*1.6,'triangle',0.5);
+  if(i%4===0)musNote(BAS[Math.floor(i/8)]-12+(i%8===4?7:0),t,e*2.2,'sine',0.45);
+  if(i%2===0)musNote(96,t,0.05,'square',0.03);
+  MUS.next+=e;MUS.step++}}
+function musApply(){if(!MUS.g)return;const on=MUS.want&&!MUS.duck&&!document.hidden;MUS.g.gain.setTargetAtTime(on?0.16:0.0001,MUS.ctx.currentTime,0.15);$('#mbtn').classList.toggle('off',!MUS.want)}
+function musStart(){try{if(!MUS.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;MUS.ctx=new C();MUS.g=MUS.ctx.createGain();MUS.g.gain.value=0.0001;MUS.g.connect(MUS.ctx.destination)}
+  if(MUS.ctx.state==='suspended')MUS.ctx.resume();
+  if(!MUS.timer){MUS.next=MUS.ctx.currentTime+0.1;MUS.timer=setInterval(musTick,50)}
+  MUS.started=true;musApply()}catch(e){}}
+function musDuck(d){MUS.duck=d;musApply()}
+$('#mbtn').onclick=e=>{e.stopPropagation();MUS.want=!MUS.want;if(MUS.want)musStart();musApply();say(MUS.want?'Musik menyala.':'Musik dimatikan.')};
+document.addEventListener('pointerdown',function f(e){if(e.target.closest&&e.target.closest('#mbtn'))return;document.removeEventListener('pointerdown',f);musStart()});
+document.addEventListener('visibilitychange',musApply);
 
 const ORDER=['sains','indo','space','angka','hewan'];
 let cs=SERIES.sains, curKey='sains', cur=0;
@@ -811,7 +844,7 @@ function openSheet(i){
   if(x.why)$('#why').textContent=x.why;
   if(x.q){$('#h-q').textContent=L.quiz||'❓ Kuis mini';renderSQ(x)}
   $('#prev').style.visibility=i===0?'hidden':'visible';$('#next').style.visibility=i===s.all.length-1?'hidden':'visible';
-  $('#veil').classList.add('on');$('#sheet').classList.add('on');$('#sheet').scrollTop=0;say(s.openSay);
+  $('#veil').classList.add('on');$('#sheet').classList.add('on');$('#sheet').scrollTop=0;say(s.openSay);musDuck(true);
 }
 function renderSQ(x){
   const box=$('#sq');box.innerHTML=`<div class="qt">${x.q}</div>`;let done=false;
@@ -824,7 +857,7 @@ function renderSQ(x){
   box.appendChild(fb);
 }
 function cnt(){const t=$$('#steps li'),d=$$('#steps li.done');$('#sp').textContent=t.length?`(${d.length}/${t.length} selesai)`:'';if(t.length&&d.length===t.length)say('Hebat! Semua langkah selesai.')}
-function closeSheet(){try{apStop()}catch(e){}
+function closeSheet(){try{apStop()}catch(e){}musDuck(false);
  $('#veil').classList.remove('on');$('#sheet').classList.remove('on')}
 $('#close').onclick=closeSheet;$('#veil').onclick=closeSheet;
 $('#prev').onclick=()=>openSheet(cur-1);$('#next').onclick=()=>openSheet(cur+1);
