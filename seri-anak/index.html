@@ -674,7 +674,7 @@ function genScenes(k,s,x){
 ['sains','indo','space','hewan'].forEach(k=>{const s=SERIES[k];[...s.items,...s.bonus].forEach(x=>{x.scenes=genScenes(k,s,x)})});
 
 let AP=null;
-function apDur(sc){if(sc.dur)return sc.dur;const n=sc.rows.reduce((a,r)=>a+r.length,0);return Math.max(4500,n*600+3200,sc.narasi.length*70+1800)}
+function apDur(sc){if(sc.dur)return sc.dur;const n=sc.rows.reduce((a,r)=>a+r.length,0);return Math.max(4500,n*600+3200,sc.narasi.length*85+2200)}
 function apBuild(sc){
   let d=0;const total=sc.rows.reduce((a,r)=>a+r.length,0),xd=(total*0.6+0.5).toFixed(2)+'s';
   let h=sc.head?`<div class="aphead">${sc.head}</div>`:'';
@@ -691,7 +691,7 @@ function apBuild(sc){
   if(sc.note)h+=`<div class="apnote" style="--nd:${(d+0.2).toFixed(2)}s">${sc.note}</div>`;
   return h;
 }
-function apStop(){
+function apStop(){SPG++;
   if(AP&&AP.timer){clearTimeout(AP.timer);AP.timer=null}
   try{speechSynthesis.cancel()}catch(e){}
   if(AP)AP.playing=false;
@@ -700,12 +700,27 @@ function apPlayBtn(){const b=$('#applay');if(b&&AP)b.textContent=AP.playing?'❚
 let VOICES=[],VI=-1;
 function loadVoices(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^id([-_]|$)/i.test(v.lang));if(VI<0||VI>=VOICES.length){let sv=null;try{sv=localStorage.getItem('voiceName')}catch(e){}const f=VOICES.findIndex(v=>v.name===sv);if(f>=0)VI=f;else{let b=-1,bs=-1;VOICES.forEach((v,i)=>{let sc=0;if(/natural|neural|online/i.test(v.name))sc+=6;if(/google/i.test(v.name))sc+=4;if(/gadis|damayanti|andini|siti|female|wanita/i.test(v.name))sc+=2;if(!v.localService)sc+=1;if(sc>bs){bs=sc;b=i}});VI=b}}}catch(e){}}
 try{loadVoices();speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
-function apSpeak(t){try{if(!AP.voice||!window.speechSynthesis)return;speechSynthesis.cancel();if(!VOICES.length)loadVoices();
-  const parts=t.match(/[^.!?]+[.!?]*/g)||[t];
-  parts.forEach(p=>{p=p.trim();if(!p)return;const u=new SpeechSynthesisUtterance(p);u.lang='id-ID';if(VOICES[VI])u.voice=VOICES[VI];
-    const ex=/!$/.test(p),q=/\?$/.test(p);u.rate=ex?.98:.9;u.pitch=ex?1.2:q?1.15:1.08;u.volume=1;speechSynthesis.speak(u)})}catch(e){}}
+let SPG=0;
+function apSpeak(t){try{if(!AP.voice||!window.speechSynthesis)return;speechSynthesis.cancel();SPG++;const g=SPG;if(!VOICES.length)loadVoices();
+  const q=[];
+  (t.match(/[^.!?]+[.!?]*/g)||[t]).forEach(sen=>{sen=sen.trim();if(!sen)return;
+    const end=/[!?]$/.test(sen)?sen.slice(-1):'.';
+    let ph=sen.replace(/[.!?]+$/,'').split(/\s*[,:;]\s*/).filter(Boolean);
+    const out=[];ph.forEach(x=>{const w=x.split(/\s+/);if(w.length>7){const h=Math.ceil(w.length/2);out.push(w.slice(0,h).join(' '),w.slice(h).join(' '))}else out.push(x)});
+    ph=out;const n=ph.length,list=n>=3&&ph.every(x=>x.split(/\s+/).length<=2);
+    ph.forEach((x,k)=>{const last=k===n-1;let pitch,rate,gap;
+      if(list){pitch=last?1.02:1.0+0.28*(k/Math.max(1,n-2));rate=last?.8:.88;gap=last?420:170}
+      else if(last){if(end==='?'){pitch=1.32;rate=.88}else if(end==='!'){pitch=1.12;rate=.9}else{pitch=.98;rate=.84}gap=420}
+      else{const f=k/Math.max(1,n-1);pitch=(end==='!'?1.3:1.2)-0.18*f+(k%2?0.05:0);rate=end==='!'?1.0:.93;gap=150}
+      if(k===0&&n>1&&!list)pitch+=0.06;
+      q.push({x,pitch,rate,gap})})});
+  let i=0;const next=()=>{if(g!==SPG||i>=q.length)return;const it=q[i++];const u=new SpeechSynthesisUtterance(it.x);u.lang='id-ID';if(VOICES[VI])u.voice=VOICES[VI];
+    u.pitch=Math.max(0.1,Math.min(2,it.pitch));u.rate=it.rate;u.volume=1;
+    let done=false;const go=()=>{if(done)return;done=true;if(g===SPG)setTimeout(next,it.gap)};u.onend=go;u.onerror=go;
+    speechSynthesis.speak(u)};
+  next()}catch(e){}}
 function apVoiceNext(){try{if(!VOICES.length)loadVoices();if(!VOICES.length){say('Perangkat ini hanya punya satu suara bahasa Indonesia.');return}VI=(VI+1)%VOICES.length;try{localStorage.setItem('voiceName',VOICES[VI].name)}catch(e){}
-  say('Suara: '+VOICES[VI].name);const was=AP.voice;AP.voice=true;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Halo teman-teman, ayo belajar bersama!');u.lang='id-ID';u.voice=VOICES[VI];u.pitch=1.1;u.rate=.92;speechSynthesis.speak(u);AP.voice=was}catch(e){}}
+  say('Suara: '+VOICES[VI].name);const was=AP.voice;AP.voice=true;SPG++;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Halo teman-teman, ayo belajar bersama!');u.lang='id-ID';u.voice=VOICES[VI];u.pitch=1.1;u.rate=.92;speechSynthesis.speak(u);AP.voice=was}catch(e){}}
 function apShow(i,play){
   if(AP.timer){clearTimeout(AP.timer);AP.timer=null}
   const sc=AP.sc[i];AP.i=i;
@@ -733,14 +748,14 @@ function apStart(){AP.playing=true;AP.ended=false;apPlayBtn();apShow(AP.ended?0:
 $('#apcover').onclick=()=>{if(!AP)return;AP.playing=true;AP.ended=false;apPlayBtn();apShow(AP.i>=AP.sc.length-1?0:AP.i,true)};
 $('#applay').onclick=()=>{
   if(!AP)return;
-  if(AP.playing){AP.playing=false;if(AP.timer){clearTimeout(AP.timer);AP.timer=null}try{speechSynthesis.cancel()}catch(e){}$$('.apdots i.cur').forEach(e=>e.style.setProperty('--ps','paused'));apPlayBtn();return}
+  if(AP.playing){AP.playing=false;if(AP.timer){clearTimeout(AP.timer);AP.timer=null}SPG++;try{speechSynthesis.cancel()}catch(e){}$$('.apdots i.cur').forEach(e=>e.style.setProperty('--ps','paused'));apPlayBtn();return}
   $('#apcover').click();
 };
 $('#apprev').onclick=()=>{if(AP)apShow(Math.max(0,AP.i-1),AP.playing)};
 $('#apnext').onclick=()=>{if(AP)apShow(Math.min(AP.sc.length-1,AP.i+1),AP.playing)};
 $('#apdots').onclick=e=>{const i=e.target.closest('i');if(i&&AP)apShow(+i.dataset.k,AP.playing)};
 $('#apvsel').onclick=()=>{if(AP)apVoiceNext()};
-$('#apvoice').onclick=e=>{if(!AP)return;AP.voice=!AP.voice;e.target.textContent=AP.voice?'🔊':'🔇';e.target.classList.toggle('on',AP.voice);if(!AP.voice){try{speechSynthesis.cancel()}catch(_){}}};
+$('#apvoice').onclick=e=>{if(!AP)return;AP.voice=!AP.voice;e.target.textContent=AP.voice?'🔊':'🔇';e.target.classList.toggle('on',AP.voice);if(!AP.voice){SPG++;try{speechSynthesis.cancel()}catch(_){}}};
 
 /* =================== MUSIK LATAR (dibuat langsung di browser) =================== */
 const MUS={ctx:null,g:null,timer:null,step:0,next:0,want:true,duck:false,started:false};
