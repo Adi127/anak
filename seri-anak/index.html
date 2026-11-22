@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eksperimen Sains Seru - Seri Anak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#17376b; --orange:#e8793a; --teal:#2fb0d3; --sky1:#dcf4ff; --sky2:#fff7df;
+  --wood:#c58f5a; --wood-d:#a46f3d; --board:#4a8274; --board-b:#a87b4f; --card:#fff;
+  --pink:#c2417a; --purple:#7a3fa0; --green:#2e9a5b;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--navy);
+  background:linear-gradient(180deg,var(--sky1) 0%,#eefaff 45%,var(--sky2) 100%);background-attachment:fixed;
+  padding-bottom:120px;overflow-x:hidden}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px 0;position:relative}
+.dots i{position:fixed;border-radius:50%;background:#9fd8ee;opacity:.55;pointer-events:none;animation:drift 9s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* pill */
+.pill{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border-radius:999px;padding:9px 16px;
+  box-shadow:0 4px 14px rgba(23,55,107,.14);font-weight:900;font-size:13px;letter-spacing:.06em;margin:0 auto;width:fit-content;max-width:100%}
+.pill b{background:var(--teal);color:#fff;border-radius:999px;padding:4px 10px;font-size:11px;letter-spacing:.02em}
+
+/* chalkboard + shelves */
+.stage{position:relative;margin-top:16px;min-height:150px}
+.board{position:relative;width:62%;margin:0 auto;background:var(--board);border:6px solid var(--board-b);border-radius:12px;padding:12px 14px;color:#fff;
+  box-shadow:0 6px 14px rgba(0,0,0,.15);z-index:2}
+.board .f{font-weight:900;font-size:clamp(15px,4.6vw,21px)}
+.board .t{font-weight:700;font-size:clamp(13px,4vw,18px);opacity:.95;margin-top:4px}
+.shelf{position:absolute;bottom:-18px;width:21%;display:flex;flex-direction:column;align-items:center}
+.shelf.l{left:0}.shelf.r{right:0}
+.tubes{display:flex;gap:4px;align-items:flex-end}
+.tube{width:12px;height:56px;border:2px solid #cfe3ee;border-radius:3px 3px 8px 8px;background:#f4fbff;position:relative;overflow:hidden}
+.tube span{position:absolute;left:0;right:0;bottom:0;border-radius:0 0 6px 6px;animation:fill 4s ease-in-out infinite}
+@keyframes fill{0%,100%{height:48%}50%{height:62%}}
+.bar{height:7px;border-radius:5px;background:#b08752;width:100%;margin-top:2px}
+
+h1,h2{margin:0}
+.hello{text-align:center;margin-top:34px}
+.hello small{display:block;font-weight:900;letter-spacing:.22em;color:var(--teal);font-size:clamp(12px,3.6vw,16px)}
+.hello h1{font-size:clamp(34px,10vw,50px);line-height:1.02;font-weight:900;margin-top:4px}
+.big{font-size:clamp(38px,12vw,60px);font-weight:900;color:var(--orange);text-align:center;line-height:1;margin:22px 0 14px;text-shadow:0 3px 0 rgba(255,255,255,.7)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{background:#fff;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;box-shadow:0 4px 12px rgba(23,55,107,.12);border:0;font-family:inherit;color:var(--navy);cursor:pointer}
+.chip:active{transform:scale(.96)}
+
+/* robot */
+.robot{display:block;margin:18px auto 0;width:170px;animation:bob 3s ease-in-out infinite;cursor:pointer}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.bulb{animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.55}50%{opacity:1}}
+.shadow{width:110px;height:14px;border-radius:50%;background:rgba(23,55,107,.14);margin:-4px auto 0;animation:sh 3s ease-in-out infinite}
+@keyframes sh{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.8)}}
+
+section{margin-top:44px;scroll-margin-top:74px}
+.sec-title{font-size:clamp(24px,7.4vw,32px);font-weight:900;text-align:center;line-height:1.1}
+.sec-sub{text-align:center;font-weight:700;opacity:.75;margin:6px 0 18px;font-size:14px}
+
+/* grid cards */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:#fff;border-radius:18px;padding:12px 10px 14px;box-shadow:0 8px 20px rgba(23,55,107,.13);text-align:center;border:0;font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .15s}
+.card:active{transform:scale(.96)}
+.card:hover{transform:translateY(-3px)}
+.card svg{width:100%;max-width:120px;height:96px}
+.card .nm{font-weight:900;font-size:14px;letter-spacing:.01em;text-transform:uppercase}
+.card .num{font-size:11px;font-weight:800;color:#fff;background:var(--teal);border-radius:999px;padding:2px 9px}
+.card.bonus .num{background:var(--orange)}
+.bonus-head{margin:22px 0 12px;text-align:center;font-weight:900;font-size:18px;color:var(--orange)}
+
+/* fakta */
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.flip{perspective:700px;height:150px;cursor:pointer;border:0;background:none;padding:0;font-family:inherit}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;box-shadow:0 8px 18px rgba(23,55,107,.13)}
+.face.fr{background:#fff;font-weight:900;font-size:16px;flex-direction:column;gap:6px}
+.face.fr em{font-style:normal;font-size:30px}
+.face.bk{background:var(--teal);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:13.5px;line-height:1.35}
+
+/* kuis */
+.quiz{background:#fff;border-radius:22px;padding:20px 16px;box-shadow:0 8px 22px rgba(23,55,107,.13)}
+.qprog{height:8px;border-radius:6px;background:#e3f1f7;overflow:hidden;margin-bottom:14px}
+.qprog i{display:block;height:100%;background:var(--orange);width:0;transition:width .3s}
+.qtext{font-weight:900;font-size:18px;line-height:1.25;margin-bottom:12px}
+.opt{display:block;width:100%;text-align:left;font-family:inherit;font-weight:800;font-size:15px;color:var(--navy);background:#eef8fc;border:2px solid transparent;border-radius:14px;padding:12px 14px;margin-bottom:9px;cursor:pointer}
+.opt.ok{background:#d9f5e3;border-color:var(--green)}
+.opt.no{background:#ffe1e1;border-color:#d9534f}
+.exp{font-weight:700;font-size:14px;background:#fff6dd;border-radius:12px;padding:10px 12px;margin-top:4px;display:none}
+.btn{font-family:inherit;font-weight:900;font-size:16px;background:var(--orange);color:#fff;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;box-shadow:0 5px 0 #b95a22}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #b95a22}
+.btn.alt{background:var(--teal);box-shadow:0 5px 0 #1a86a3}
+.center{text-align:center;margin-top:12px}
+.score{font-size:56px;font-weight:900;color:var(--orange);text-align:center}
+
+.safe{margin-top:36px;background:#fff;border-radius:18px;padding:14px 16px;font-weight:700;font-size:14px;box-shadow:0 6px 16px rgba(23,55,107,.1);border-left:6px solid var(--orange)}
+.safe b{display:block;font-weight:900;margin-bottom:4px}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(10,30,60,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:50}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#e8f8ff,#fff 40%);border-radius:26px 26px 0 0;
+  transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:60;padding:16px 16px 40px;max-width:560px;margin:0 auto}
+.sheet.on{transform:none}
+.grab{width:46px;height:5px;border-radius:4px;background:#c4d8e2;margin:0 auto 10px}
+.x{position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;border:0;background:#17376b;color:#fff;font-size:20px;font-weight:900;cursor:pointer}
+.sheet h3{margin:0 44px 0 0;font-size:24px;font-weight:900;line-height:1.1}
+.tagline{font-weight:800;color:var(--teal);font-size:13px;letter-spacing:.06em;margin-bottom:8px}
+.demo{position:relative;background:#fff;border-radius:18px;height:190px;margin:12px 0;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 0 0 2px #e3f1f7}
+.demo svg{height:150px;width:auto;max-width:90%}
+.demo .go{position:absolute;bottom:10px;right:10px;font-size:14px;padding:9px 16px}
+.b{position:absolute;border-radius:50%;background:rgba(255,255,255,.85);border:2px solid var(--teal);animation:rise 1.8s ease-out forwards;pointer-events:none}
+@keyframes rise{from{transform:translateY(0) scale(.5);opacity:1}to{transform:translateY(-150px) scale(1.2);opacity:0}}
+.sp{position:absolute;font-size:22px;animation:pop 1.2s ease-out forwards;pointer-events:none}
+@keyframes pop{from{transform:scale(.3);opacity:1}to{transform:translateY(-50px) scale(1.3);opacity:0}}
+.slide{animation:zoom 1.4s ease-in forwards}
+@keyframes zoom{to{transform:translateX(150px)}}
+.h{font-weight:900;font-size:16px;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+.mats{display:flex;flex-wrap:wrap;gap:7px}
+.mats span{background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13.5px;box-shadow:0 2px 8px rgba(23,55,107,.1)}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:14px;padding:11px 12px;margin-bottom:8px;font-weight:700;font-size:15px;line-height:1.3;cursor:pointer;
+  box-shadow:0 2px 8px rgba(23,55,107,.08);border:2px solid transparent}
+.steps li::before{counter-increment:s;content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px}
+.steps li.done{background:#e2f7ea;border-color:var(--green);text-decoration:line-through;opacity:.8}
+.steps li.done::before{content:"\2713";background:var(--green)}
+.why{background:#fff6dd;border-radius:16px;padding:12px 14px;font-weight:700;font-size:15px;line-height:1.4}
+.adult{display:inline-block;background:var(--orange);color:#fff;border-radius:999px;padding:4px 12px;font-weight:900;font-size:12px}
+.nav{display:flex;gap:10px;justify-content:space-between;margin-top:18px}
+
+/* player bar */
+.player{position:fixed;left:0;right:0;bottom:0;z-index:40;background:linear-gradient(180deg,var(--wood) 0,var(--wood-d) 100%);border-top:5px solid #94622f;padding:10px 14px 14px}
+.player .in{max-width:520px;margin:0 auto}
+.sub{background:#fff;border-radius:14px;padding:10px 14px;font-weight:800;font-size:14.5px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.18);min-height:44px;display:flex;align-items:center;justify-content:center;line-height:1.25}
+.ctl{display:flex;align-items:center;gap:12px;margin-top:9px}
+.pp{width:30px;height:30px;border:0;background:none;padding:0;cursor:pointer;display:flex;gap:5px;align-items:center;justify-content:center}
+.pp i{width:6px;height:20px;background:#fff;border-radius:2px}
+.pp.paused i:first-child{width:0;height:0;background:none;border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;border-radius:0}
+.pp.paused i:last-child{display:none}
+.track{flex:1;height:9px;border-radius:6px;background:rgba(255,255,255,.4);overflow:hidden}
+.track i{display:block;height:100%;width:0;background:#fff;border-radius:6px}
+
+
+/* ---------- switcher ---------- */
+.tabs{position:sticky;top:0;z-index:30;display:flex;gap:6px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:6px;border-radius:999px;box-shadow:0 4px 14px rgba(23,55,107,.14);margin:0 auto 14px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;white-space:nowrap;border:0;font-family:inherit;font-weight:900;font-size:13.5px;padding:10px 14px;border-radius:999px;background:transparent;color:var(--navy);cursor:pointer;transition:background .2s,color .2s}
+.tab.on{background:var(--teal);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.view{display:none}.view.on{display:block}
+
+/* ---------- tema Keliling Indonesia ---------- */
+body.indo{--navy:#27491f;--teal:#e5484d;--orange:#e07a2f;--pink:#a24a1a;--purple:#7a3fa0;
+  background:linear-gradient(180deg,#c9ecff 0%,#e9f8ff 38%,#fdf2c4 72%,#fcecb4 100%);background-attachment:fixed}
+body.indo .sec-title,body.indo .hello h1,body.indo .hello small,body.hewan .sec-title,body.hewan .hello h1,body.hewan .hello small{color:#245a1d}
+body.hewan .hello small,body.indo .hello small{letter-spacing:.04em;font-size:clamp(20px,6vw,28px)}
+body.indo .player{background:linear-gradient(180deg,#4cc3de 0,#2c9cc3 100%);border-top:5px solid #2688ad}
+body.indo .track{background:rgba(255,255,255,.4)}
+body.indo .sheet{background:linear-gradient(180deg,#dff4ff,#fff 40%)}
+body.indo .x{background:#27491f}
+.decor{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+body.indo .d-indo,body.hewan .d-indo{display:block}
+body.space .d-space{display:block}
+body.space .dots{display:none}
+.sun{position:absolute;right:-30px;top:70px;width:130px;height:130px;border-radius:50%;background:#f8c93c;box-shadow:0 0 0 22px rgba(248,201,60,.25);animation:sunp 6s ease-in-out infinite}
+@keyframes sunp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.cloud{position:absolute;width:120px;height:34px;border-radius:30px;background:#fff;opacity:.9;filter:blur(1px);animation:cl 28s linear infinite}
+.cloud::before{content:"";position:absolute;left:22px;top:-16px;width:56px;height:40px;border-radius:50%;background:#fff}
+@keyframes cl{from{transform:translateX(-160px)}to{transform:translateX(560px)}}
+.isle{position:absolute;bottom:96px}
+.isle svg{display:block}
+.wrap,.player{position:relative}
+.player{position:fixed}
+.wrap{z-index:1}
+.gara{display:block;margin:18px auto 0;width:190px;animation:bob 3s ease-in-out infinite;cursor:pointer}
+.gara.hop{animation:hop .7s ease-out}
+@keyframes hop{0%{transform:translateY(0)}35%{transform:translateY(-40px) rotate(-4deg)}70%{transform:translateY(0) rotate(3deg)}100%{transform:none}}
+.pill.indo b{background:#e5484d}
+.tk{background:#fff;border-radius:22px;padding:20px 16px;box-shadow:0 8px 22px rgba(23,55,107,.13);text-align:center}
+.tk .lab{display:inline-block;background:#ffd24d;color:#6b4a00;font-weight:900;border-radius:999px;padding:5px 14px;font-size:13px;letter-spacing:.04em}
+.tkq{font-weight:900;font-size:19px;line-height:1.25;margin:12px 0}
+.tka{display:none;background:#e8f7e4;border-radius:14px;padding:12px;font-weight:700;font-size:15px;line-height:1.35;margin-bottom:8px}
+
+
+/* ---------- tema Tata Surya ---------- */
+body.space{--navy:#2a1a6b;--teal:#7b61ff;--orange:#ff7b72;
+  background:linear-gradient(180deg,#1a1050 0%,#241766 55%,#2b1d6e 100%);background-attachment:fixed;color:#2a1a6b}
+body.space .sec-title,body.space .sp-title{color:#fff}
+body.space .sec-sub{color:#fff;opacity:.7}
+body.space .bonus-head{color:#ffb36b}
+body.space .btn{box-shadow:0 5px 0 #c4514a}
+body.space .btn.alt{box-shadow:0 5px 0 #5a43c9}
+body.space .pill{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.22);box-shadow:none;margin:0}
+body.space .tab.on{box-shadow:0 3px 0 rgba(0,0,0,.2)}
+body.space .player{background:linear-gradient(180deg,#2a1b66,#1f1450);border-top:3px solid rgba(255,255,255,.15)}
+body.space .sub{background:#d8d0ee;color:#2a1a6b;border:2px solid #e3b05a}
+body.space .sheet{color:#2a1a6b}
+.d-space i{position:absolute;border-radius:50%;background:#fff;opacity:.8;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+.neb{position:absolute;width:320px;height:320px;border-radius:50%;filter:blur(70px);opacity:.35}
+.sp-title{font-size:clamp(30px,9vw,42px);font-weight:900;text-align:center;line-height:1.1;margin:0}
+.hook{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:10px}
+.hook .rk{width:150px;animation:bob 3s ease-in-out infinite;cursor:pointer}
+.hook .rk.hop{animation:hop .7s ease-out}
+.hook .col{display:flex;flex-direction:column;align-items:center;gap:0}
+.hook .hp svg{width:100%;display:block}
+.flame{animation:fl .5s ease-in-out infinite alternate;transform-origin:70px 146px}
+@keyframes fl{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
+.num10{font-size:clamp(76px,24vw,116px);font-weight:900;text-align:center;line-height:1;margin-top:26px;background:linear-gradient(180deg,#ffb36b,#f58aa0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gobtn{font-family:inherit;font-weight:900;font-size:20px;color:#fff;border:0;border-radius:999px;padding:16px 34px;margin-top:20px;cursor:pointer;background:linear-gradient(90deg,#f7776f,#f88aa0);box-shadow:0 10px 26px rgba(247,119,111,.45)}
+.gobtn:active{transform:scale(.97)}
+.mmenu{display:flex;flex-direction:column;gap:16px;margin-top:20px}
+.mcard{display:flex;align-items:center;gap:14px;background:#fff;border:0;border-radius:18px;padding:16px;text-align:left;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.25);color:#2a1a6b}
+.mcard .ci{flex:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
+.mcard b{display:block;font-size:20px;font-weight:900}
+.mcard small{display:block;font-size:14px;font-weight:700;color:#6a5aa8;margin-top:2px}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 6px}
+.pgrid.two{grid-template-columns:repeat(2,1fr);max-width:260px;margin:0 auto}
+.planet{background:none;border:0;padding:0;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.planet .pi{width:100%;max-width:86px;transition:transform .2s}
+.planet:active .pi,.planet:hover .pi{transform:scale(1.12)}
+.planet .pl{background:#fff;color:#2a1a6b;font-weight:900;font-size:12px;border-radius:999px;padding:4px 9px;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.pgrid .pi svg{width:100%;display:block;overflow:visible}
+
+body.hewan{--navy:#2f4a1f;--teal:#30a030;--orange:#e0783a;--pink:#a24a1a;background:linear-gradient(180deg,#e8f6de 0%,#fcf2c4 55%,#fee2a0 100%);background-attachment:fixed}
+body.hewan .player{background:linear-gradient(180deg,#7ccb52,#4c9f31);border-top:5px solid #3f8a27}
+body.hewan .x{background:#26591c}
+body.angka{--navy:#3b2a63;--teal:#7a5bb5;--orange:#f2873a;--pink:#d1478a;background:linear-gradient(180deg,#fbeefa,#e9f3ff);background-attachment:fixed}
+body.angka .player{background:linear-gradient(180deg,#9a7bd6,#7a5bb5);border-top:5px solid #634a9a}
+.card img{width:100%;max-width:120px;height:96px;object-fit:contain}
+.demo img{height:150px;width:auto;max-width:90%;object-fit:contain}
+.grid>.card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 7px)}
+.hewan-m{width:170px;height:auto;display:block;margin:14px auto 0;cursor:pointer;animation:bob 2.6s ease-in-out infinite}
+.hewan-m.hop{animation:hop .7s ease-out}
+.sq .qt{font-weight:800;font-size:16px;margin-bottom:8px}
+.sq .opt{margin-bottom:7px}
+
+/* ---------- pemutar animasi Angka ---------- */
+.applayer{background:#fff;border-radius:22px;box-shadow:0 8px 22px rgba(122,91,181,.25);overflow:hidden;border:3px solid var(--c,#7a5bb5);margin:12px 0}
+.apstage{position:relative;min-height:300px;padding:14px 10px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:repeating-linear-gradient(#fff 0 31px,#efe9fb 31px 32px);text-align:center}
+.aphead{font-weight:900;font-size:22px;line-height:1.1;color:#3b2a63}
+.aprow{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:8px 10px;max-width:100%}
+.apt{display:flex;flex-direction:column;align-items:center;font-size:36px;line-height:1;opacity:0;transform:scale(.2);animation:appop .5s cubic-bezier(.3,1.6,.5,1) forwards;position:relative}
+.apt b{font-size:14px;color:#6b5a93;margin-top:3px;font-weight:800;min-height:17px}
+.apt.big{font-size:78px}
+.apt.num{font-size:40px;font-weight:900;color:var(--c,#7a5bb5)}
+.apt.ev{color:#e05252}.apt.od{color:#2f8fd1}
+.apt.op{font-size:30px;font-weight:900;color:#6b5a93}
+.apt.res{font-size:34px;font-weight:900;color:#fff;background:#25a85a;border-radius:999px;min-width:54px;height:54px;padding:0 14px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px #25a85a55}
+.apt.q{font-size:40px;color:var(--c,#7a5bb5)}
+.apt.coin{font-size:16px;font-weight:900;background:#ffe39a;border:3px solid #e8b630;border-radius:14px;padding:10px 9px;color:#7a5a00}
+.apt.x::after{content:"";position:absolute;left:-4px;right:-4px;top:38%;height:5px;border-radius:3px;background:#e24b4b;transform:scaleX(0);animation:apcross .4s ease forwards;animation-delay:var(--xd)}
+.apt.x{animation-name:appop,apfade;animation-duration:.5s,.5s;animation-fill-mode:forwards,forwards;animation-delay:var(--d),var(--xd)}
+@keyframes appop{to{opacity:1;transform:scale(1)}}
+@keyframes apcross{to{transform:scaleX(1)}}
+@keyframes apfade{from{opacity:1}to{opacity:.35}}
+.apnote{background:#fff7d6;border:2px dashed #f0c64a;border-radius:16px;padding:8px 14px;font-weight:800;font-size:14.5px;max-width:94%;opacity:0;animation:appop .5s forwards;animation-delay:var(--nd);color:#3b2a63}
+.apcap{background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(59,42,99,.18);margin:0 10px 10px;padding:10px 14px;font-weight:800;font-size:15.5px;line-height:1.25;text-align:center;min-height:54px;display:flex;align-items:center;justify-content:center;color:#3b2a63}
+.apctrl{display:flex;align-items:center;gap:7px;padding:0 10px 12px}
+.apctrl button{appearance:none;border:0;background:var(--c,#7a5bb5);color:#fff;border-radius:999px;width:42px;height:42px;font-size:17px;cursor:pointer;font-weight:900;flex:none;font-family:inherit}
+.apctrl button.ghost{background:#efe9fb;color:#3b2a63}
+.apctrl button.on{background:#25a85a;color:#fff}
+.apdots{flex:1;display:flex;gap:5px;justify-content:center}
+.apdots i{height:8px;flex:1;max-width:34px;border-radius:99px;background:#e2d9f3;cursor:pointer;position:relative;overflow:hidden}
+.apdots i.done{background:var(--c,#7a5bb5)}
+.apdots i.cur::after{content:"";position:absolute;inset:0;background:var(--c,#7a5bb5);transform-origin:left;animation:approg var(--dur) linear forwards;animation-play-state:var(--ps,running)}
+@keyframes approg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.apcover{position:absolute;inset:0;background:rgba(255,255,255,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:3;cursor:pointer;border:0;font-family:inherit;color:#3b2a63}
+.apcover .pl{width:80px;height:80px;border-radius:50%;background:var(--c,#7a5bb5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 10px 22px rgba(59,42,99,.35)}
+.apcover span{font-weight:900;font-size:17px}
+.apcover[hidden]{display:none}
+
+.apt svg{max-width:150px;height:auto}
+.apt.ico svg{width:150px;height:150px;max-width:none}
+.apt.ico img{height:150px;width:auto;object-fit:contain}
+.apt.chp{font-size:14.5px;font-weight:900;background:#fff;border:2px solid var(--c,#7a5bb5);border-radius:999px;padding:7px 13px;color:#3b2a63;line-height:1.1;box-shadow:0 3px 8px rgba(59,42,99,.12)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="dots" aria-hidden="true">
+  <i style="width:12px;height:12px;left:8%;top:30%"></i><i style="width:9px;height:9px;left:88%;top:44%;animation-delay:-3s"></i>
+  <i style="width:14px;height:14px;left:18%;top:70%;animation-delay:-5s"></i><i style="width:10px;height:10px;left:80%;top:78%;animation-delay:-2s"></i>
+</div>
+<div class="decor d-indo" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="cloud" style="top:110px;animation-delay:-6s"></div>
+  <div class="cloud" style="top:260px;width:90px;animation-duration:38s;animation-delay:-20s"></div>
+  <div class="isle" style="left:-26px"><svg width="130" height="76" viewBox="0 0 120 70"><ellipse cx="60" cy="52" rx="56" ry="14" fill="#6fbf59"/><ellipse cx="50" cy="48" rx="40" ry="10" fill="#8fd36f"/><path d="M62 48V28" stroke="#4a8a3a" stroke-width="4"/><path d="M62 28q-14-2-18 6M62 28q14-2 18 6" stroke="#3f8a3c" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+  <div class="isle" style="right:-20px;bottom:130px"><svg width="110" height="64" viewBox="0 0 120 70"><ellipse cx="60" cy="52" rx="56" ry="14" fill="#6fbf59"/><ellipse cx="50" cy="48" rx="40" ry="10" fill="#8fd36f"/><path d="M62 48V28" stroke="#4a8a3a" stroke-width="4"/><path d="M62 28q-14-2-18 6M62 28q14-2 18 6" stroke="#3f8a3c" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+</div>
+<div class="decor d-space" id="stars" aria-hidden="true"><div class="neb" style="left:-120px;top:120px;background:#6a3a7a"></div><div class="neb" style="right:-140px;top:55%;background:#2c4fa3"></div></div>
+
+<div class="wrap">
+  <nav class="tabs" id="tabs" aria-label="Pilih seri"></nav>
+  <div id="views"></div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="st">
+  <div class="grab"></div><button class="x" id="close" aria-label="Tutup">×</button>
+  <div class="tagline" id="sn"></div>
+  <h3 id="st"></h3>
+  <div id="g-player" style="display:none"><div class="applayer" id="applayer"><div class="apstage"><div id="apin" style="display:contents"></div><button class="apcover" id="apcover"><div class="pl">▶</div><span>Putar video</span></button></div><div class="apcap" id="apcap"></div><div class="apctrl"><button class="ghost" id="apprev" aria-label="Adegan sebelumnya">⏮</button><button id="applay" aria-label="Putar atau jeda">▶</button><button class="ghost" id="apnext" aria-label="Adegan berikutnya">⏭</button><div class="apdots" id="apdots"></div><button class="ghost" id="apvoice" aria-label="Suara narasi">🔇</button></div></div></div>
+  <div class="demo" id="demo"><div id="ico"></div><button class="btn alt go" id="go">Coba!</button></div>
+  <span class="adult" id="adult"></span>
+  <div id="g-mats"><div class="h" id="h-mats"></div><div class="mats" id="mats"></div></div>
+  <div id="g-steps"><div class="h"><span id="h-steps"></span> <small id="sp" style="font-weight:800;opacity:.6"></small></div><ol class="steps" id="steps"></ol></div>
+  <div id="g-fact"><div class="h" id="h-fact"></div><div class="why" id="fact"></div></div>
+  <div id="g-why"><div class="h" id="h-why"></div><div class="why" id="why"></div></div>
+  <div id="g-q"><div class="h" id="h-q"></div><div class="sq" id="sq"></div></div>
+  <div class="nav"><button class="btn alt" id="prev">‹ Sebelumnya</button><button class="btn" id="next">Berikutnya ›</button></div>
+</div>
+
+<div class="player">
+  <div class="in">
+    <div class="sub" id="sub"></div>
+    <div class="ctl"><button class="pp" id="pp" aria-label="Jeda teks"><i></i><i></i></button><div class="track"><i id="tr"></i></div></div>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const S=(b)=>`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${b}</svg>`;
+
+/* =================== IKON SAINS =================== */
+const IC={
+volcano:S(`<g fill="#f08aa0"><circle cx="40" cy="14" r="3"/><circle cx="55" cy="8" r="2.5"/><circle cx="48" cy="20" r="4" fill="#ff7d5c"/></g><path d="M18 88L40 36h20l22 52z" fill="#8a5a3a"/><path d="M38 38q12-8 24 0l-4 8h-16z" fill="#ff6b4a"/><path d="M46 46q-4 18-8 40M58 46q4 18 8 40" stroke="#ff6b4a" stroke-width="4" stroke-linecap="round" fill="none" opacity=".85"/><circle cx="46" cy="68" r="2.4" fill="#3a2418"/><circle cx="58" cy="68" r="2.4" fill="#3a2418"/><path d="M48 74q4 3 8 0" stroke="#3a2418" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="90" rx="38" ry="4" fill="#dde7ee"/>`),
+balon:S(`<circle cx="50" cy="26" r="19" fill="#f46a99"/><path d="M50 45l-4 6h8z" fill="#d94a7c"/><rect x="43" y="50" width="14" height="12" fill="#e8f6fb" stroke="#9fd0e3" stroke-width="2"/><path d="M43 62q-16 8-16 24h46q0-16-16-24z" fill="#e8f6fb" stroke="#9fd0e3" stroke-width="2"/><path d="M31 76h38v10H31z" fill="#58d6c2"/><circle cx="42" cy="73" r="2" fill="#fff"/><circle cx="55" cy="70" r="2.5" fill="#fff"/>`),
+susu:S(`<ellipse cx="50" cy="60" rx="42" ry="26" fill="#f4f1ea" stroke="#d9d4c8" stroke-width="3"/><ellipse cx="50" cy="58" rx="34" ry="19" fill="#fffdf6"/><circle cx="36" cy="54" r="7" fill="#f7c948"/><circle cx="52" cy="48" r="7" fill="#5bb8dd"/><circle cx="62" cy="62" r="7" fill="#f06c8f"/><circle cx="43" cy="66" r="6" fill="#7ccf62"/><path d="M60 18l-12 36" stroke="#d8a15f" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="54" r="3.5" fill="#fff"/>`),
+telur:S(`<path d="M12 22h30l-3 62H15z" fill="#d4effa" stroke="#9fd0e3" stroke-width="2"/><path d="M58 22h30l-3 62H61z" fill="#bfe6f6" stroke="#9fd0e3" stroke-width="2"/><path d="M13 34h28l-2 50H15z" fill="#bfe6f6"/><ellipse cx="27" cy="72" rx="8" ry="10" fill="#fff3dc" stroke="#e5cfa0" stroke-width="2"/><ellipse cx="73" cy="46" rx="8" ry="10" fill="#fff3dc" stroke="#e5cfa0" stroke-width="2"/><g fill="#fff" opacity=".9"><circle cx="66" cy="74" r="1.6"/><circle cx="74" cy="78" r="1.6"/><circle cx="80" cy="72" r="1.6"/></g>`),
+roket:S(`<path d="M6 50h88" stroke="#c8963e" stroke-width="3"/><circle cx="6" cy="50" r="3" fill="#e8564a"/><circle cx="94" cy="50" r="3" fill="#e8564a"/><rect x="58" y="44" width="14" height="6" rx="2" fill="#f3c44a"/><ellipse cx="70" cy="62" rx="17" ry="11" fill="#e8564a"/><path d="M53 62l-12-6v12z" fill="#e8564a"/><path d="M36 58l-8-2M36 62h-10M36 66l-8 2" stroke="#9fd0e3" stroke-width="3" stroke-linecap="round"/>`),
+bunga:S(`<g transform="translate(50 26)"><g fill="#f4a3cc"><circle cx="0" cy="-14" r="10"/><circle cx="13" cy="-4" r="10"/><circle cx="8" cy="12" r="10"/><circle cx="-8" cy="12" r="10"/><circle cx="-13" cy="-4" r="10"/></g><circle r="8" fill="#ffd95a"/></g><path d="M50 40v46" stroke="#4aa65c" stroke-width="4"/><path d="M50 62q-16-2-18-14 14-2 18 14z" fill="#5cc06f"/><path d="M26 56h48l-5 34H31z" fill="#fde0ea" stroke="#f4a3cc" stroke-width="2"/><path d="M29 72h42l-2 18H31z" fill="#f48fb5"/>`),
+lava:S(`<rect x="38" y="8" width="24" height="10" rx="3" fill="#d9a441"/><path d="M38 18h24l10 66q0 8-8 8H36q-8 0-8-8z" fill="#e8f6fb" stroke="#9fd0e3" stroke-width="2"/><path d="M33 40h34l5 44q0 6-6 6H34q-6 0-6-6z" fill="#fbe9a8"/><path d="M31 62h38l3 22q0 6-6 6H34q-6 0-6-6z" fill="#f2678a"/><circle cx="46" cy="52" r="7" fill="#f2678a"/><circle cx="58" cy="40" r="5" fill="#f2678a"/><circle cx="48" cy="30" r="3.5" fill="#f2678a"/>`),
+kertas:S(`<rect x="14" y="12" width="72" height="78" rx="6" fill="#fffef8" stroke="#e5e0cf" stroke-width="3"/><g stroke-linecap="round" stroke-width="7" fill="none"><path d="M26 82V52" stroke="#f06c8f"/><path d="M38 82V40" stroke="#f7c948"/><path d="M50 82V30" stroke="#5bb8dd"/><path d="M62 82V44" stroke="#7ccf62"/><path d="M74 82V56" stroke="#a96cd8"/></g><path d="M14 80h72v10H14z" fill="#bfe6f6" opacity=".7"/>`),
+es:S(`<rect x="26" y="36" width="48" height="48" rx="8" fill="#c9eefb" stroke="#8fd3ee" stroke-width="3"/><path d="M34 44l10 2M60 72l6-8" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M50 6v44" stroke="#e8564a" stroke-width="3"/><path d="M50 50q4 8 0 14" stroke="#e8564a" stroke-width="3" fill="none"/><g fill="#fff" stroke="#cfd8dc"><rect x="64" y="16" width="8" height="8" rx="2"/><rect x="74" y="26" width="6" height="6" rx="2"/></g>`),
+koin:S(`<ellipse cx="50" cy="66" rx="38" ry="22" fill="#f1c35b" stroke="#c99527" stroke-width="3"/><ellipse cx="50" cy="62" rx="30" ry="15" fill="#f8dc8c"/><path d="M50 14q12 18 0 28q-12-10 0-28z" fill="#6cc4ea" stroke="#3aa2cf" stroke-width="2"/><path d="M34 60q16-14 32 0q-16 8-32 0z" fill="#bfe6f6" opacity=".85"/>`),
+/* =================== IKON INDONESIA =================== */
+monas:S(`<ellipse cx="50" cy="92" rx="34" ry="4" fill="#dde7ee"/><rect x="24" y="78" width="52" height="12" rx="2" fill="#8fa8d0"/><rect x="40" y="70" width="20" height="10" fill="#a9bde0"/><path d="M46 70L48 24h4l2 46z" fill="#e6edf5" stroke="#c9d6e6" stroke-width="2"/><rect x="43" y="20" width="14" height="5" rx="1" fill="#bfcbe0"/><path d="M50 3q9 10 0 17q-9-7 0-17z" fill="#f7c93e"/><circle cx="48" cy="46" r="1.6" fill="#333"/><circle cx="53" cy="46" r="1.6" fill="#333"/><path d="M48.5 50q2 2 4 0" stroke="#333" fill="none" stroke-width="1.4"/><rect x="47" y="82" width="6" height="8" fill="#8a5a3a"/>`),
+pura:S(`<ellipse cx="50" cy="92" rx="36" ry="4" fill="#e3dccb"/><path d="M40 10h20l-4 8H44z" fill="#6b3f26"/><path d="M34 24h32l-4 9H38z" fill="#7a4a2e"/><path d="M28 40h44l-5 10H33z" fill="#6b3f26"/><rect x="34" y="50" width="32" height="38" fill="#b0653a"/><circle cx="43" cy="68" r="2" fill="#2d1a10"/><circle cx="57" cy="68" r="2" fill="#2d1a10"/><ellipse cx="50" cy="78" rx="5" ry="7" fill="#2d1a10"/><circle cx="39" cy="73" r="3" fill="#f08a8a" opacity=".7"/><circle cx="61" cy="73" r="3" fill="#f08a8a" opacity=".7"/><path d="M20 90V62l8-4v32zM80 90V62l-8-4v32z" fill="#8a4f2f"/><path d="M74 30v-14l12 4-12 4" fill="#e04a4a"/><circle cx="50" cy="5" r="2.5" fill="#f7c93e"/>`),
+candi:S(`<ellipse cx="50" cy="91" rx="44" ry="4" fill="#ddd6cf"/><rect x="8" y="76" width="84" height="12" rx="3" fill="#8e8579"/><rect x="18" y="64" width="64" height="12" rx="3" fill="#a39a8c"/><rect x="26" y="52" width="48" height="12" rx="3" fill="#8e8579"/><rect x="34" y="42" width="32" height="10" rx="3" fill="#a39a8c"/><path d="M38 42a12 12 0 0 1 24 0z" fill="#8e8579"/><path d="M47 30a3 3 0 0 1 6 0z" fill="#8e8579"/><path d="M50 22v8" stroke="#8e8579" stroke-width="2"/><path d="M20 52a5 5 0 0 1 10 0z M70 52a5 5 0 0 1 10 0z" fill="#8e8579"/><circle cx="42" cy="70" r="1.8" fill="#333"/><circle cx="58" cy="70" r="1.8" fill="#333"/><path d="M46 74q4 3 8 0" stroke="#333" fill="none" stroke-width="1.6"/><circle cx="36" cy="73" r="2.5" fill="#f08a8a" opacity=".7"/><circle cx="64" cy="73" r="2.5" fill="#f08a8a" opacity=".7"/>`),
+toba:S(`<path d="M6 40q22-24 44-4 22-20 44 4v22H6z" fill="#7cc653"/><ellipse cx="50" cy="66" rx="44" ry="24" fill="#3fa9dd"/><ellipse cx="50" cy="64" rx="18" ry="9" fill="#7cc653"/><path d="M50 52v8" stroke="#5a7a3a" stroke-width="2"/><circle cx="50" cy="50" r="5" fill="#5da63f"/><circle cx="45" cy="64" r="1.5" fill="#333"/><circle cx="55" cy="64" r="1.5" fill="#333"/><path d="M26 76q6-3 12 0M62 80q6-3 12 0" stroke="#fff" fill="none" stroke-width="2" stroke-linecap="round"/><path d="M26 70l10-2v6z" fill="#d9534f"/>`),
+bunaken:S(`<rect x="6" y="20" width="88" height="68" rx="14" fill="#7fd3ee"/><path d="M6 78q44-10 88 0v2a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="#f1d9a5"/><g stroke-width="5" stroke-linecap="round" fill="none"><path d="M24 78V56M30 78V50M36 78V58" stroke="#f26a7a"/><path d="M46 78V48M52 78V42M58 78V50" stroke="#f08ad0"/><path d="M68 78V54M74 78V46M80 78V56" stroke="#f7c038"/></g><ellipse cx="38" cy="34" rx="8" ry="4.5" fill="#ff8a3d"/><path d="M46 34l6-4v8z" fill="#ff8a3d"/><ellipse cx="72" cy="30" rx="7" ry="4" fill="#4a7ef0"/><path d="M79 30l6-4v8z" fill="#4a7ef0"/><circle cx="34" cy="33" r="1.2" fill="#222"/><circle cx="68" cy="29" r="1.2" fill="#222"/>`),
+rajaampat:S(`<ellipse cx="50" cy="84" rx="44" ry="10" fill="#3fb8d8"/><path d="M22 84V58q4-16 14-18q8-14 18 0q10 4 12 18v26z" fill="#8a8f98"/><path d="M26 60q6-24 16-20q6-14 14-2q8 2 12 22q-20-6-42 0z" fill="#4faa4a"/><circle cx="42" cy="72" r="2" fill="#222"/><circle cx="56" cy="72" r="2" fill="#222"/><path d="M46 77q4 3 8 0" stroke="#222" fill="none" stroke-width="1.8"/><path d="M78 84V58q6-14 14-6v32z" fill="#8a8f98"/><path d="M78 60q6-14 14-8v8z" fill="#4faa4a"/><path d="M10 82q8-3 16 0M60 88q8-3 16 0" stroke="#fff" fill="none" stroke-width="2" stroke-linecap="round"/>`),
+komodo:S(`<ellipse cx="50" cy="90" rx="40" ry="4" fill="#e8dcc0"/><path d="M8 78q10 6 20-4" stroke="#7d6e43" stroke-width="7" fill="none" stroke-linecap="round"/><ellipse cx="46" cy="66" rx="28" ry="14" fill="#8a7a4d"/><ellipse cx="78" cy="58" rx="12" ry="9" fill="#8a7a4d"/><circle cx="82" cy="55" r="2" fill="#222"/><path d="M89 60l8 2m0 0l3-3m-3 3l3 3" stroke="#e04a4a" stroke-width="2" fill="none" stroke-linecap="round"/><g stroke="#7d6e43" stroke-width="6" stroke-linecap="round"><path d="M32 76v10M44 78v8M60 78v8M70 74v12"/></g><g fill="#a59560"><circle cx="38" cy="62" r="2.5"/><circle cx="50" cy="60" r="2.5"/><circle cx="62" cy="63" r="2.5"/></g>`),
+bromo:S(`<rect x="4" y="76" width="92" height="14" rx="6" fill="#e8d6a8"/><path d="M14 78L38 32h24l24 46z" fill="#7a6a5b"/><path d="M38 32q12-6 24 0l-3 6q-9-4-18 0z" fill="#4e4036"/><g fill="#d8d3cf" opacity=".9"><circle cx="48" cy="24" r="6"/><circle cx="58" cy="16" r="7"/><circle cx="68" cy="10" r="5"/></g><circle cx="45" cy="60" r="2" fill="#222"/><circle cx="55" cy="60" r="2" fill="#222"/><path d="M47 66q3 3 6 0" stroke="#222" fill="none" stroke-width="1.8"/><circle cx="84" cy="22" r="8" fill="#f9c93d"/>`),
+lombok:S(`<path d="M4 66h92v22q0 6-6 6H10q-6 0-6-6z" fill="#3fb8d8"/><path d="M10 68L40 22h20l30 46z" fill="#7a6a5b"/><path d="M40 22q10-5 20 0l-3 7q-7-3-14 0z" fill="#3fa9dd"/><ellipse cx="24" cy="68" rx="22" ry="6" fill="#f1d9a5"/><circle cx="44" cy="48" r="2" fill="#222"/><circle cx="56" cy="48" r="2" fill="#222"/><path d="M47 54q3 3 6 0" stroke="#222" fill="none" stroke-width="1.8"/><path d="M80 70V50" stroke="#8a5a3a" stroke-width="3"/><path d="M80 50q-10-4-14 4M80 50q10-4 14 4M80 50q0-10 0-10" stroke="#3f8a3c" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 82q8-3 16 0M60 86q8-3 16 0" stroke="#fff" fill="none" stroke-width="2" stroke-linecap="round"/>`),
+gadang:S(`<ellipse cx="50" cy="90" rx="40" ry="4" fill="#dccfb6"/><path d="M8 40q6-14 18-20q-2 10 2 18h44q4-8 2-18q12 6 18 20z" fill="#7a2f2f"/><path d="M30 24q10-12 20-4q10-8 20 4z" fill="#8c3a3a"/><rect x="22" y="40" width="56" height="34" fill="#b9753f"/><path d="M26 46h48M26 54h48" stroke="#8a4f26" stroke-width="2"/><rect x="42" y="58" width="16" height="16" rx="2" fill="#4a2a14"/><g fill="#8a4f26"><rect x="22" y="74" width="5" height="14"/><rect x="42" y="74" width="5" height="14"/><rect x="53" y="74" width="5" height="14"/><rect x="73" y="74" width="5" height="14"/></g><circle cx="33" cy="62" r="1.8" fill="#222"/><circle cx="67" cy="62" r="1.8" fill="#222"/>`),
+tongkonan:S(`<ellipse cx="50" cy="90" rx="40" ry="4" fill="#d8cdb4"/><path d="M6 34q10 4 20 14h48q10-10 20-14-2 16-14 22H20Q8 50 6 34z" fill="#6b3f26"/><path d="M26 48h48v30H26z" fill="#a55a2c"/><path d="M30 54h40M30 62h40" stroke="#e8c55a" stroke-width="2"/><path d="M30 58h40M30 66h40" stroke="#222" stroke-width="2"/><rect x="45" y="66" width="10" height="12" fill="#3a1f10"/><g fill="#7a4a2e"><rect x="28" y="78" width="5" height="12"/><rect x="67" y="78" width="5" height="12"/></g><path d="M8 34q-2-8 6-12M92 34q2-8-6-12" stroke="#6b3f26" stroke-width="4" fill="none" stroke-linecap="round"/>`)
+};
+
+/* =================== IKON PLANET =================== */
+const FACE=`<circle cx="42" cy="52" r="2.6" fill="#2a1a6b"/><circle cx="58" cy="52" r="2.6" fill="#2a1a6b"/><path d="M43 59q7 7 14 0" stroke="#2a1a6b" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="35" cy="58" r="3.5" fill="#f9a8c1" opacity=".8"/><circle cx="65" cy="58" r="3.5" fill="#f9a8c1" opacity=".8"/>`;
+const PL=(k,hi,lo,inner,o={})=>`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="g${k}" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="${hi}"/><stop offset="1" stop-color="${lo}"/></radialGradient><clipPath id="c${k}"><circle cx="50" cy="50" r="32"/></clipPath></defs>${o.back||''}<circle cx="50" cy="50" r="32" fill="url(#g${k})"/><g clip-path="url(#c${k})">${inner}</g>${o.front||''}${o.face?FACE:''}</svg>`;
+const RING=`<g transform="rotate(-18 50 50)">`;
+const PLN=(face)=>({
+merkurius:PL('mk','#ece6d6','#a39d8e','<circle cx="38" cy="38" r="6" fill="#b5af9f"/><circle cx="60" cy="56" r="8" fill="#b5af9f"/><circle cx="44" cy="66" r="4" fill="#b5af9f"/><circle cx="64" cy="36" r="3" fill="#b5af9f"/>',{face}),
+venus:PL('vn','#fbdc90','#d9953d','<path d="M18 40q30 10 64 0M18 58q30-10 64 4" stroke="#e8b25a" stroke-width="5" fill="none" opacity=".7"/>',{face}),
+bumi:PL('bm','#7fd0fa','#2a79c9','<path d="M30 36q10-10 20-2 6 10-6 16-10 0-14-14z" fill="#3fae5a"/><path d="M56 56q12-6 18 4-4 12-16 8z" fill="#3fae5a"/><path d="M34 66q8-4 12 4" stroke="#3fae5a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M26 48q16 6 30-4M44 72q14-4 28-14" stroke="#fff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/>',{face}),
+mars:PL('mr','#f5977a','#b9502e','<ellipse cx="38" cy="46" rx="9" ry="6" fill="#a8452a"/><ellipse cx="62" cy="62" rx="10" ry="6" fill="#a8452a"/><ellipse cx="50" cy="24" rx="16" ry="6" fill="#fdf1ea"/>',{face}),
+jupiter:PL('jp','#f8e6c8','#c89055','<rect x="10" y="30" width="80" height="7" fill="#c98f58" opacity=".75"/><rect x="10" y="44" width="80" height="8" fill="#e7c796" opacity=".9"/><rect x="10" y="58" width="80" height="7" fill="#c98f58" opacity=".75"/><rect x="10" y="72" width="80" height="6" fill="#e0b98a" opacity=".8"/><ellipse cx="62" cy="64" rx="8" ry="5" fill="#d8553f"/>',{face}),
+saturnus:PL('st','#f6e5a7','#c9a85a','<rect x="10" y="32" width="80" height="6" fill="#d9bb6b" opacity=".8"/><rect x="10" y="50" width="80" height="7" fill="#e8d28f" opacity=".9"/><rect x="10" y="66" width="80" height="6" fill="#d9bb6b" opacity=".8"/>',{back:`${RING}<ellipse cx="50" cy="50" rx="47" ry="12" fill="none" stroke="#e2bd62" stroke-width="7"/></g>`,front:`${RING}<path d="M3 50A47 12 0 0 0 97 50" fill="none" stroke="#f0cd74" stroke-width="7"/></g>`,face}),
+uranus:PL('ur','#b8f0e6','#4fb7ad','<rect x="10" y="40" width="80" height="6" fill="#d4faf3" opacity=".5"/><rect x="10" y="58" width="80" height="5" fill="#2f9a90" opacity=".25"/>',{face}),
+neptunus:PL('np','#86adf6','#2e4fb8','<ellipse cx="62" cy="40" rx="7" ry="4" fill="#223f98"/><path d="M20 62q30 8 60-4" stroke="#a9c4ff" stroke-width="3" fill="none" opacity=".6"/>',{face}),
+matahari:PL('sn','#fff08a','#f59d1a','',{back:'<g stroke="#ffb629" stroke-width="5" stroke-linecap="round"><path d="M50 4v10M50 86v10M4 50h10M86 50h10M17 17l7 7M76 76l7 7M83 17l-7 7M24 76l-7 7"/></g>',face:true}),
+bulan:PL('mn','#f1f1f1','#a9a9b3','<circle cx="36" cy="38" r="7" fill="#c3c3cc"/><circle cx="62" cy="54" r="9" fill="#c3c3cc"/><circle cx="42" cy="68" r="5" fill="#c3c3cc"/><circle cx="64" cy="34" r="3.5" fill="#c3c3cc"/>',{face})
+});
+const P=PLN(false), PF=PLN(true);
+const ROCKET=`<svg viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg"><g class="flame"><path d="M70 146q-13 12 0 36q13-24 0-36z" fill="#ffa62b"/><path d="M70 150q-6 8 0 20q6-12 0-20z" fill="#ffe27a"/></g><path d="M42 112L18 152l26-10z" fill="#d9473f"/><path d="M98 112l24 40-26-10z" fill="#d9473f"/><path d="M70 6C98 38 106 88 100 144H40C34 88 42 38 70 6z" fill="#ef6a5e" stroke="#fff" stroke-width="2"/><circle cx="70" cy="70" r="21" fill="#8fd3ee" stroke="#4aa8c8" stroke-width="5"/><circle cx="62" cy="67" r="2.6" fill="#2a1a6b"/><circle cx="78" cy="67" r="2.6" fill="#2a1a6b"/><path d="M62 76q8 7 16 0" stroke="#2a1a6b" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="55" cy="75" r="3.5" fill="#f9a8c1" opacity=".8"/><circle cx="85" cy="75" r="3.5" fill="#f9a8c1" opacity=".8"/><path d="M41 118h58l1 26H40z" fill="#fff"/><path d="M40.4 128h59.2v7H40.4z" fill="#f7c63c"/></svg>`;
+const GARA=`<svg class="gara mascot" viewBox="0 0 200 230" aria-label="Gara si garuda kecil. Ketuk untuk menyapa"><ellipse cx="100" cy="214" rx="46" ry="7" fill="rgba(60,60,40,.15)"/>
+<path d="M82 188l-6 24 14-8 10 12 10-12 14 8-6-24z" fill="#8a5524"/>
+<path d="M60 128Q18 118 14 168q26 6 52-14z" fill="#8a5524"/><path d="M140 128Q182 118 186 168q-26 6-52-14z" fill="#8a5524"/>
+<rect x="40" y="132" width="20" height="40" rx="9" fill="#e8803a"/>
+<ellipse cx="100" cy="150" rx="46" ry="52" fill="#c98a3a"/><ellipse cx="100" cy="158" rx="30" ry="34" fill="#fbf0dc"/>
+<path d="M62 150Q36 150 30 176q24-2 40-20z" fill="#9b6228" opacity=".9"/><path d="M138 150q26 0 32 26-24-2-40-20z" fill="#9b6228" opacity=".9"/>
+<g stroke="#f0a020" stroke-width="4" stroke-linecap="round" fill="none"><path d="M82 198l-4 12M82 198l4 12M118 198l4 12M118 198l-4 12"/></g>
+<path d="M70 44l-6-26 18 18zM100 38l-2-30 14 28zM130 44l8-24-20 20z" fill="#8a5524"/>
+<circle cx="100" cy="82" r="46" fill="#dca24f"/><ellipse cx="100" cy="96" rx="32" ry="26" fill="#fcefd8"/>
+<path d="M52 74Q100 6 148 74Q100 52 52 74z" fill="#d63c3c"/><circle cx="150" cy="76" r="7" fill="#c03030"/><g fill="#fff" opacity=".85"><circle cx="76" cy="52" r="2"/><circle cx="96" cy="44" r="2"/><circle cx="118" cy="50" r="2"/><circle cx="104" cy="58" r="2"/></g>
+<circle cx="82" cy="86" r="6.5" fill="#1f1a18"/><circle cx="118" cy="86" r="6.5" fill="#1f1a18"/><circle cx="84" cy="84" r="2" fill="#fff"/><circle cx="120" cy="84" r="2" fill="#fff"/>
+<circle cx="66" cy="98" r="7" fill="#f7a8a8" opacity=".75"/><circle cx="134" cy="98" r="7" fill="#f7a8a8" opacity=".75"/>
+<path d="M91 94h18l-9 15z" fill="#f5b82e"/>
+<path d="M62 122Q100 142 138 122L140 138Q100 158 60 138z" fill="#d63c3c"/><path d="M122 132l24 4-12 30-18-22z" fill="#c23030"/><g fill="#fff" opacity=".9"><circle cx="76" cy="132" r="2"/><circle cx="96" cy="139" r="2"/><circle cx="116" cy="134" r="2"/><circle cx="136" cy="152" r="2"/></g></svg>`;
+
+/* =================== DATA SERI =================== */
+const SERIES={};
+
+SERIES.sains={
+ tab:'🔬 Sains Seru', body:'', layout:'card',
+ lab:{tag:'PERCOBAAN',mats:'🧺 Alat dan bahan',steps:'📋 Langkah',why:'💡 Kenapa bisa begitu?',adult:'👨‍👩‍👧 Bersama orang dewasa',go:'Coba!'},
+ hero:`<div class="pill"><span>🔬</span> EKSPERIMEN SAINS SERU <b>SERI ANAK</b></div>
+ <div class="stage">
+  <div class="shelf l"><div class="tubes"><div class="tube"><span style="background:#f28b8b"></span></div><div class="tube"><span style="background:#5fcfc0;animation-delay:-1s"></span></div><div class="tube"><span style="background:#f7c948;animation-delay:-2s"></span></div></div><div class="bar"></div></div>
+  <div class="board"><div class="f">H₂O + CO₂</div><div class="t">air + gas = gelembung</div></div>
+  <div class="shelf r"><div class="tubes"><div class="tube"><span style="background:#f7a4c4;animation-delay:-.5s"></span></div><div class="tube"><span style="background:#5bb8dd;animation-delay:-1.5s"></span></div><div class="tube"><span style="background:#a3d96c;animation-delay:-2.5s"></span></div></div><div class="bar"></div></div>
+ </div>
+ <div class="hello"><small>SELAMAT DATANG DI</small><h1>EKSPERIMEN<br>SAINS SERU! 🔬</h1></div>
+ <svg class="robot mascot" viewBox="0 0 170 210" aria-label="Maskot robot sains. Ketuk untuk menyapa">
+  <g class="bulb"><circle cx="85" cy="22" r="13" fill="#ffd24d" stroke="#f0a500" stroke-width="3"/><g stroke="#f0a500" stroke-width="3" stroke-linecap="round"><path d="M62 8l-6-5M108 8l6-5M56 24h-8M114 24h8"/></g></g>
+  <rect x="82" y="34" width="6" height="16" fill="#8aa6b8"/><ellipse cx="85" cy="92" rx="48" ry="46" fill="#fff" stroke="#dfeaf0" stroke-width="3"/>
+  <rect x="30" y="80" width="11" height="26" rx="5" fill="#44b1d6"/><rect x="129" y="80" width="11" height="26" rx="5" fill="#44b1d6"/>
+  <ellipse cx="85" cy="94" rx="35" ry="32" fill="#8fd3ee"/><circle cx="72" cy="90" r="5.5" fill="#17376b"/><circle cx="98" cy="90" r="5.5" fill="#17376b"/>
+  <circle cx="62" cy="103" r="6" fill="#f9a8c1" opacity=".8"/><circle cx="108" cy="103" r="6" fill="#f9a8c1" opacity=".8"/>
+  <path id="mouth" d="M77 104q8 8 16 0" fill="none" stroke="#17376b" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M52 140q33 10 66 0l8 56q-41 10-82 0z" fill="#fff" stroke="#dfeaf0" stroke-width="3"/><path d="M52 140l-6 54 28 5V146zM118 140l6 54-28 5V146z" fill="#f7c63c"/>
+  <circle cx="85" cy="160" r="6" fill="#f39aa8"/><rect x="98" y="172" width="16" height="12" rx="3" fill="#e6a911"/>
+  <path d="M52 150L26 168" stroke="#bcd5e6" stroke-width="8" stroke-linecap="round"/><circle cx="24" cy="170" r="9" fill="#44b1d6"/>
+  <path d="M118 150L144 168" stroke="#bcd5e6" stroke-width="8" stroke-linecap="round"/><circle cx="146" cy="170" r="9" fill="#44b1d6"/></svg>
+ <div class="shadow"></div>
+ <div class="big" style="margin-top:26px">10 PERCOBAAN<br>SERU!</div>`,
+ chips:[['🧪 8 Percobaan Seru','main'],['📋 Langkah Jelas','main'],['✨ Fakta Seru','fakta'],['❓ Kuis Mini','kuis'],['🎁 2 Bonus','bonus']],
+ mainTitle:'PERCOBAAN SERU<br>YANG AMAN! 🧪', mainSub:'Ketuk gambar untuk melihat alat, langkah, dan alasannya',
+ bonusTitle:'🎁 2 BONUS: percobaan tambahan',
+ factsTitle:'FAKTA SERU ✨',
+ note:'<b>🧑‍🤝‍🧑 Catatan untuk orang tua dan guru</b>Semua percobaan memakai bahan dapur. Dampingi anak, siapkan alas atau nampan, dan ingatkan bahwa semua bahan percobaan tidak untuk dimakan atau diminum. Hindari mata dan mulut saat bereksperimen, lalu cuci tangan setelahnya.',
+ lines:['Halo, teman-teman. Ini Eksperimen Sains Seru, seri percobaan sederhana yang aman bersama orang dewasa.','Ketuk gambar percobaan untuk melihat alat, bahan, dan langkahnya.','Ada gunung meletus, balon mengembang, dan susu yang berwarna-warni.','Ada juga telur yang mengapung, roket balon yang meluncur, dan bunga yang berubah warna.','Jangan lupa cuci tangan setelah bereksperimen.','Sudah selesai? Coba kuis mini di bawah untuk menguji pengetahuanmu.'],
+ mascot:'Halo! Aku Robo Sains. Pilih percobaan favoritmu, yuk!', openSay:'Ayo siapkan alat dan bahannya bersama orang dewasa.',
+ items:[
+{n:'Gunung Meletus',ic:'volcano',fx:'bubbles',col:'#e8793a',mats:['Gelas bekas atau botol kecil','Baking soda 2 sendok makan','Cuka 1/2 gelas','Pewarna makanan merah','Sedikit sabun cuci piring','Nampan'],steps:['Taruh gelas di tengah nampan.','Masukkan baking soda dan setetes sabun cuci piring.','Teteskan pewarna merah supaya lavanya berwarna.','Tuang cuka perlahan, lalu lihat gunungnya meletus!'],why:'Baking soda bertemu cuka dan menghasilkan gas karbon dioksida (CO₂). Gas itu membentuk gelembung yang mendorong busa keluar dari gelas, seperti lava.'},
+{n:'Balon Mengembang',ic:'balon',fx:'bubbles',col:'#c2417a',mats:['Botol plastik kecil','Balon','Cuka 1/4 gelas','Baking soda 2 sendok teh','Corong atau kertas yang digulung'],steps:['Tuang cuka ke dalam botol.','Pakai corong untuk memasukkan baking soda ke dalam balon.','Pasang mulut balon di leher botol dengan hati-hati.','Angkat balon supaya baking soda jatuh ke botol, lalu lihat balonnya menggembung.'],why:'Reaksi cuka dan baking soda menghasilkan gas CO₂. Gas itu naik dan mengisi balon sehingga balon mengembang tanpa ditiup.'},
+{n:'Susu Pelangi',ic:'susu',fx:'spark',col:'#7a3fa0',mats:['Piring cekung','Susu cair secukupnya','Pewarna makanan beberapa warna','Sabun cuci piring','Kapas lidi (cotton bud)'],steps:['Tuang susu ke piring sampai menutupi dasar.','Teteskan beberapa warna pewarna di permukaan susu.','Celupkan ujung cotton bud ke sabun cuci piring.','Sentuh susu dengan cotton bud tadi dan lihat warnanya menari.'],why:'Sabun mengurangi tegangan permukaan dan menarik lemak di susu. Lemak yang bergerak ikut membawa pewarna, jadi warnanya berputar seperti pelangi.'},
+{n:'Telur Mengapung',ic:'telur',fx:'bubbles',col:'#1b7fa0',mats:['2 gelas bening','Air biasa','Garam sekitar 6 sendok makan','1 sendok pengaduk','2 butir telur mentah'],steps:['Isi kedua gelas dengan air sampai 3/4 penuh.','Masukkan garam ke satu gelas dan aduk sampai larut.','Letakkan telur pelan-pelan di gelas air biasa. Telur tenggelam.','Letakkan telur di gelas air garam. Telur mengapung!'],why:'Garam yang larut membuat air lebih padat (massa jenis naik). Kalau air lebih padat dari telur, telur terdorong ke atas dan mengapung.'},
+{n:'Roket Balon',ic:'roket',fx:'slide',col:'#c2417a',mats:['Benang panjang 3 sampai 4 meter','Sedotan','Balon','Selotip','Dua kursi sebagai tiang'],steps:['Masukkan benang ke sedotan, lalu ikat kedua ujung benang di dua kursi sampai tegang.','Tiup balon, jepit ujungnya, lalu tempelkan balon di sedotan dengan selotip.','Hitung mundur 3, 2, 1.','Lepaskan jepitan dan lihat roketnya meluncur.'],why:'Udara keluar ke belakang, dan balon terdorong ke depan. Ini disebut aksi dan reaksi: setiap dorongan punya dorongan lawan yang arahnya berlawanan.'},
+{n:'Bunga Berubah Warna',ic:'bunga',fx:'spark',col:'#d1478a',mats:['Bunga putih (mawar, krisan, atau seruni)','Gelas berisi air','Pewarna makanan pekat','Gunting (dipegang orang dewasa)'],steps:['Isi gelas dengan air dan teteskan banyak pewarna.','Minta orang dewasa memotong ujung tangkai bunga miring.','Masukkan bunga ke gelas.','Tunggu 1 hari dan lihat kelopaknya berubah warna.'],why:'Tangkai punya pembuluh kecil yang menyedot air ke atas sampai kelopak. Air membawa pewarna, jadi kelopak putih ikut berwarna.'},
+{n:'Lampu Lava',ic:'lava',fx:'bubbles',col:'#c83b6b',mats:['Botol bening','Minyak goreng 3/4 botol','Air 1/4 botol','Pewarna makanan','Tablet effervescent (jangan dimakan)'],steps:['Isi botol dengan minyak, lalu tuang air perlahan.','Teteskan pewarna dan tunggu sampai turun ke lapisan air.','Masukkan setengah tablet effervescent.','Lihat gelembung lava naik turun. Boleh tambah tablet lagi.'],why:'Minyak lebih ringan dari air, jadi tidak bercampur dan selalu di atas. Gelembung gas dari tablet mengangkat air berwarna ke atas, lalu turun lagi saat gasnya lepas.'},
+{n:'Pelangi di Kertas',ic:'kertas',fx:'spark',col:'#7a3fa0',mats:['Kertas saring atau tisu dapur','Spidol berwarna yang larut air','Gelas berisi sedikit air','Gunting'],steps:['Gunting kertas menjadi strip panjang.','Gambar titik berwarna dekat salah satu ujung strip.','Celupkan ujung strip ke air, titik tidak boleh terendam.','Tunggu beberapa menit dan lihat warnanya terpisah menjadi beberapa warna.'],why:'Air merambat naik lewat serat kertas dan membawa warna tinta. Setiap warna punya kecepatan berbeda, jadi warna campuran terpisah.'}],
+ bonus:[
+{n:'Es Batu Menempel',ic:'es',fx:'spark',col:'#1b7fa0',mats:['Es batu','Gelas berisi air','Benang 15 cm','Garam secukupnya'],steps:['Apungkan es batu di gelas air.','Letakkan ujung benang di atas es batu.','Taburkan sedikit garam tepat di atas benang.','Tunggu sekitar 1 menit, lalu angkat benang pelan-pelan. Es ikut terangkat!'],why:'Garam membuat es mencair sedikit. Air dingin itu lalu membeku lagi di sekitar benang dan menjepitnya, jadi es bisa terangkat.'},
+{n:'Tetes Air di Koin',ic:'koin',fx:'spark',col:'#a8741a',mats:['Koin','Pipet atau sendok kecil','Air','Tisu untuk mengelap'],steps:['Letakkan koin di atas meja datar.','Tebak dulu: berapa tetes air yang muat di atas koin?','Teteskan air satu per satu dan hitung.','Lihat air menggunung sebelum akhirnya tumpah.'],why:'Molekul air saling tarik, itulah tegangan permukaan. Tarikan ini bekerja seperti kulit tipis yang menahan air tetap menggunung.'}],
+ facts:[['💨','Gas apa itu?','Gelembung di percobaan gunung meletus adalah gas karbon dioksida (CO₂), gas yang sama dengan di minuman soda.'],['🥚','Air asin','Laut Mati sangat asin sehingga orang bisa mengapung di sana tanpa berenang.'],['🚀','Roket sungguhan','Roket di angkasa juga terdorong ke atas karena menyemburkan gas ke bawah, seperti roket balon.'],['🌿','Pipa kecil di tangkai','Tumbuhan punya pembuluh kecil yang mengalirkan air dari akar sampai ke daun dan bunga.'],['🫧','Sabun dan lemak','Sabun bisa menempel pada air dan lemak sekaligus, makanya sabun bisa membersihkan tangan yang berminyak.'],['🧊','Garam dan es','Garam ditaburkan di jalan saat salju supaya es lebih cepat mencair.']],
+ tahu:null,
+ quiz:[{q:'Gas apa yang membuat balon mengembang saat cuka bertemu baking soda?',o:['Oksigen','Karbon dioksida (CO₂)','Gas tawa'],a:1,e:'Reaksi cuka dan baking soda menghasilkan karbon dioksida.'},{q:'Kenapa telur mengapung di air garam?',o:['Air garam lebih padat','Telurnya jadi ringan sendiri','Garam melubangi telur'],a:0,e:'Garam membuat air lebih padat, jadi telur terdorong ke atas.'},{q:'Apa yang mendorong roket balon meluncur?',o:['Benangnya menarik','Udara yang keluar dari balon','Sedotannya'],a:1,e:'Udara keluar ke belakang, balon terdorong ke depan.'},{q:'Apa yang dibawa air naik ke kelopak bunga putih?',o:['Pewarna makanan','Es batu','Garam'],a:0,e:'Air naik lewat tangkai membawa pewarna, jadi kelopak berubah warna.'},{q:'Apa yang harus dilakukan sebelum bereksperimen?',o:['Sendirian di kamar','Bersama orang dewasa','Sambil berlari'],a:1,e:'Selalu bereksperimen bersama orang dewasa supaya aman.'}]
+};
+
+SERIES.indo={
+ tab:'🇮🇩 Indonesia', body:'indo', layout:'card',
+ lab:{tag:'TEMPAT HEBAT',mats:'📍 Ada apa di sana?',steps:'🧭 Ayo jelajahi',why:'⭐ Tahukah kamu?',adult:'👨‍👩‍👧 Jelajahi bersama keluarga',go:'Hore!'},
+ hero:`<div class="pill indo"><span>🇮🇩</span> KELILING INDONESIA <b>SERI ANAK</b></div>
+ <div class="hello" style="margin-top:40px"><small>SELAMAT DATANG DI</small><h1>KELILING<br>INDONESIA! 🇮🇩</h1></div>
+ ${GARA}
+ <div class="big" style="margin-top:22px">11 TEMPAT<br>HEBAT!</div>`,
+ chips:[['🗺️ 9 Tempat Hebat','main'],['✨ Fakta Seru','fakta'],['⭐ TAHUKAH KAMU','tahu'],['❓ Kuis Mini','kuis'],['🎁 2 Bonus','bonus']],
+ mainTitle:'BERKELILING KE<br>TEMPAT-TEMPAT HEBAT! 🗺️', mainSub:'Ketuk tempat untuk melihat apa saja yang ada di sana',
+ bonusTitle:'🎁 2 BONUS: rumah adat',
+ factsTitle:'FAKTA SERU ✨',
+ note:null,
+ lines:['Selamat datang di Keliling Indonesia, negeri kita bersama Gara si garuda kecil.','Ketuk tempat hebat untuk melihat apa saja yang ada di sana.','Ada Jakarta, Bali, dan Yogyakarta.','Ada juga Danau Toba yang besar, taman laut Bunaken, dan Raja Ampat yang indah di Papua.','Setiap tempat punya fakta seru, tahukah kamu, dan kuis mini yang mudah diikuti anak.'],
+ mascot:'Halo! Aku Gara, si garuda kecil. Ayo keliling Indonesia!', openSay:'Ayo bayangkan kamu sedang berkunjung ke sana.',
+ items:[
+{n:'Jakarta',ic:'monas',em:['🇮🇩','✨','🏙️','⭐'],col:'#9a5a1a',mats:['Pulau Jawa','Monas','Tugu setinggi 132 meter','Kota terbesar di Indonesia'],steps:['Bayangkan berdiri di kaki Monas lalu menengok ke atas.','Cari api emas di puncak Monas.','Naik lift ke puncak untuk melihat kota dari atas.','Jalan-jalan di Taman Monas yang luas.'],why:'Puncak Monas berbentuk api yang dilapisi emas, melambangkan semangat perjuangan bangsa Indonesia yang menyala.'},
+{n:'Bali',ic:'pura',em:['🌺','✨','🛕','🌴'],col:'#7a3fa0',mats:['Pulau Bali','Pura','Tari Kecak','Sawah bertingkat'],steps:['Lihat pura dengan atap bertumpuk.','Tonton tari Kecak yang dinyanyikan banyak penari tanpa alat musik.','Lihat sawah bertingkat (terasering) yang hijau.','Dengarkan gamelan, alat musik dari logam.'],why:'Setiap tahun ada Hari Raya Nyepi, hari ketika Bali menjadi sunyi dan bandaranya pun tutup sehari penuh.'},
+{n:'Yogyakarta',ic:'candi',em:['🏯','✨','🎭','⭐'],col:'#6b5d4d',mats:['Daerah Istimewa Yogyakarta','Keraton','Candi Prambanan','Jalan Malioboro'],steps:['Kunjungi Keraton, istana Sultan Yogyakarta.','Jalan di Jalan Malioboro yang ramai.','Lihat Candi Prambanan yang tinggi dan runcing.','Dekat sini ada Candi Borobudur di Magelang, Jawa Tengah.'],why:'Candi Borobudur adalah salah satu candi Buddha terbesar di dunia dan punya 72 stupa berlubang. Letaknya tidak jauh dari Yogyakarta.'},
+{n:'Danau Toba',ic:'toba',em:['💧','✨','⛵','🌿'],col:'#1b7fa0',mats:['Sumatera Utara','Danau vulkanik','Pulau Samosir','Suku Batak'],steps:['Bayangkan danau yang luas di antara pegunungan.','Cari Pulau Samosir di tengah danau.','Lihat rumah adat Batak dengan atap melengkung.','Naik perahu kecil mengelilingi danau.'],why:'Danau Toba terbentuk dari letusan gunung berapi raksasa puluhan ribu tahun lalu. Ini danau vulkanik terbesar di dunia.'},
+{n:'Bunaken',ic:'bunaken',em:['🐠','🫧','🐟','🪸'],col:'#0f7f8f',mats:['Sulawesi Utara','Taman laut','Terumbu karang','Ikan warna-warni'],steps:['Pakai kacamata snorkel lalu lihat ke bawah laut.','Cari ikan kecil yang warna-warni.','Perhatikan dinding karang yang curam ke bawah.','Jaga laut: jangan menyentuh karang.'],why:'Taman Nasional Bunaken punya dinding karang yang sangat curam dan dihuni ratusan jenis ikan. Karangnya perlu dijaga bersama.'},
+{n:'Raja Ampat',ic:'rajaampat',em:['🏝️','✨','🐢','🐠'],col:'#2e7d32',mats:['Papua Barat Daya','Ribuan pulau kecil','Terumbu karang','Burung cenderawasih'],steps:['Cari empat pulau besarnya: Waigeo, Batanta, Salawati, dan Misool.','Lihat pulau karang berbentuk jamur di laut biru.','Selami laut yang penuh ikan dan karang.','Kenali burung cenderawasih yang cantik.'],why:'Raja Ampat berarti empat raja. Lautnya terkenal sebagai salah satu yang paling kaya akan jenis ikan dan karang di dunia.'},
+{n:'Pulau Komodo',ic:'komodo',em:['🦎','✨','🌴','☀️'],col:'#7d6e43',mats:['Nusa Tenggara Timur','Taman Nasional Komodo','Komodo','Pantai berpasir merah muda'],steps:['Cari komodo, kadal terbesar di dunia.','Lihat dari jauh bersama pemandu, jangan mendekat.','Temukan pantai berpasir merah muda.','Perhatikan padang savana yang kering.'],why:'Komodo hanya hidup liar di beberapa pulau di Indonesia dan bisa tumbuh lebih dari 2 meter.'},
+{n:'Gunung Bromo',ic:'bromo',em:['🌋','✨','🌅','⛰️'],col:'#7a4a3a',mats:['Jawa Timur','Gunung berapi','Lautan pasir','Suku Tengger'],steps:['Bangun pagi untuk melihat matahari terbit.','Lihat kawah yang mengeluarkan asap.','Seberangi lautan pasir yang luas.','Kenali suku Tengger yang tinggal di sekitarnya.'],why:'Gunung Bromo masih aktif dan tingginya sekitar 2.300 meter. Setiap tahun suku Tengger mengadakan upacara Yadnya Kasada di sini.'},
+{n:'Lombok',ic:'lombok',em:['🏔️','✨','🏖️','⛵'],col:'#0f7f8f',mats:['Nusa Tenggara Barat','Gunung Rinjani','Tiga pulau Gili','Suku Sasak'],steps:['Lihat Gunung Rinjani yang menjulang tinggi.','Cari Danau Segara Anak di dalam kawah Rinjani.','Naik perahu ke Gili Trawangan, Gili Meno, dan Gili Air.','Lihat kain tenun cantik buatan suku Sasak.'],why:'Gili artinya pulau kecil dalam bahasa Sasak. Tiga Gili yang terkenal ada di barat laut Pulau Lombok.'},
+{n:'Rumah Gadang',ic:'gadang',em:['🏠','✨','⭐','🌿'],col:'#8c3a3a',mats:['Sumatera Barat','Suku Minangkabau','Rumah adat','Atap gonjong'],steps:['Lihat atap yang runcing dan melengkung ke atas.','Hitung tiang kayu besar penyangga rumah.','Cari ukiran di dinding kayu.','Bayangkan rumah besar yang dihuni satu keluarga besar.'],why:'Atap Rumah Gadang disebut gonjong dan bentuknya seperti tanduk kerbau.'}].slice(0,9),
+ bonus:[
+{n:'Rumah Gadang',ic:'gadang',em:['🏠','✨','⭐','🌿'],col:'#8c3a3a',mats:['Sumatera Barat','Suku Minangkabau','Rumah adat','Atap gonjong'],steps:['Lihat atap yang runcing dan melengkung ke atas.','Hitung tiang kayu besar penyangga rumah.','Cari ukiran di dinding kayu.','Bayangkan rumah besar yang dihuni satu keluarga besar.'],why:'Atap Rumah Gadang disebut gonjong dan bentuknya seperti tanduk kerbau.'},
+{n:'Tongkonan Toraja',ic:'tongkonan',em:['🏠','✨','⭐','⛰️'],col:'#6b3f26',mats:['Sulawesi Selatan','Suku Toraja','Rumah adat Tongkonan','Pegunungan hijau'],steps:['Lihat rumah adat dengan atap melengkung.','Perhatikan ukiran warna merah, hitam, kuning, dan putih.','Lihat sawah hijau di lembah.','Cari tanduk kerbau yang dipajang di depan rumah.'],why:'Rumah adat Toraja bernama Tongkonan, atapnya melengkung seperti perahu.'}],
+ facts:[['🏝️','Pulau banyak','Indonesia punya lebih dari 17.000 pulau, jadi disebut negara kepulauan.'],['🗣️','Banyak bahasa','Ada ratusan bahasa daerah dari Sabang sampai Merauke.'],['🦅','Garuda','Burung garuda menjadi lambang negara kita, Garuda Pancasila.'],['🤝','Bhinneka','Bhinneka Tunggal Ika artinya berbeda-beda tetapi tetap satu.'],['🌋','Gunung berapi','Indonesia punya banyak gunung berapi yang masih aktif.'],['🌏','Garis khatulistiwa','Garis khayal khatulistiwa melewati Indonesia, jadi cuacanya hangat sepanjang tahun.']],
+ tahu:{title:'TAHUKAH KAMU? ⭐',sub:'Ketuk untuk melihat jawabannya',list:[['Danau vulkanik terbesar di dunia ada di mana?','Di Danau Toba, Sumatera Utara.'],['Apa arti nama Raja Ampat?','Empat raja. Namanya merujuk pada empat pulau besar di sana: Waigeo, Batanta, Salawati, dan Misool.'],['Berapa stupa berlubang di Candi Borobudur?','Ada 72 stupa berlubang, dan di dalamnya ada arca Buddha.'],['Hewan apa kadal terbesar di dunia?','Komodo. Hewan ini hidup liar hanya di Indonesia.'],['Apa yang ada di puncak Monas?','Api berbentuk lidah api yang dilapisi emas.']]},
+ quiz:[{q:'Apa lambang negara Indonesia?',o:['Garuda Pancasila','Burung merpati','Harimau'],a:0,e:'Lambang negara kita adalah Garuda Pancasila.'},{q:'Pulau mana yang dijuluki Pulau Dewata?',o:['Sumatera','Bali','Papua'],a:1,e:'Bali dijuluki Pulau Dewata.'},{q:'Taman laut Bunaken ada di provinsi mana?',o:['Sulawesi Utara','Bali','Papua'],a:0,e:'Bunaken ada di Sulawesi Utara, dekat kota Manado.'},{q:'Atap Rumah Gadang bentuknya seperti apa?',o:['Kubah','Tanduk kerbau','Payung'],a:1,e:'Atap gonjong Rumah Gadang bentuknya seperti tanduk kerbau.'},{q:'Bhinneka Tunggal Ika artinya apa?',o:['Berbeda-beda tetapi tetap satu','Maju terus pantang mundur','Rajin pangkal pandai'],a:0,e:'Artinya berbeda-beda tetapi tetap satu.'}]
+};
+
+SERIES.space={
+ tab:'🚀 Tata Surya', body:'space', layout:'planet',
+ lab:{tag:'PLANET',mats:'🪐 Kenalan singkat',steps:'🧑‍🚀 Misi penjelajah',why:'🤔 Tahukah kamu?',adult:'🧑‍🚀 Jelajahi bersama keluarga',go:'Meluncur!'},
+ hero:`<div class="pill"><span>🚀</span> PETUALANGAN TATA SURYA</div>
+ <h1 class="sp-title" style="margin-top:34px">Anak Suka<br>Luar Angkasa? 🚀</h1>
+ <div class="hook"><div class="rk mascot">${ROCKET}</div><div class="col"><div class="hp" style="width:92px">${PF.bumi}</div><div class="hp" style="width:128px">${PF.saturnus}</div><div class="hp" style="width:92px">${PF.jupiter}</div></div></div>
+ <div class="num10">10</div><div class="sp-title" style="font-size:clamp(26px,8vw,36px)">PETUALANGAN SERU!</div>
+ <div class="center"><button class="gobtn" data-go="space-main">▶ MULAI PETUALANGAN</button></div>
+ <h2 class="sp-title" style="margin-top:44px;font-size:clamp(26px,8vw,34px)">Kenapa Seru?</h2>
+ <div class="mmenu">
+  <button class="mcard" data-go="space-fakta"><span class="ci" style="background:#f06a6a">⭐</span><span><b>Fakta Seru</b><small>Ilmu planet dibuat gampang dan lucu</small></span></button>
+  <button class="mcard" data-go="space-tahu"><span class="ci" style="background:#3fc9b8">🤔</span><span><b>Tahukah Kamu</b><small>Fakta wow yang bikin melongo</small></span></button>
+  <button class="mcard" data-go="space-kuis"><span class="ci" style="background:#f7b52c">❓</span><span><b>Kuis Mini</b><small>Uji ingatan di akhir tiap petualangan</small></span></button>
+ </div>`,
+ chips:null,
+ mainTitle:'8 Planet Seru!', mainSub:'Ketuk planet untuk berkenalan',
+ bonusTitle:'🎁 2 BONUS: Matahari dan Bulan',
+ factsTitle:'Fakta Seru ⭐',
+ note:null,
+ lines:['Halo, penjelajah cilik! Ayo terbang keliling tata surya.','Ketuk planet untuk berkenalan dan mulai misimu.','Ada delapan planet: Merkurius, Venus, Bumi, dan Mars.','Lalu Jupiter, Saturnus, Uranus, dan Neptunus!','Sudah kenal semuanya? Coba kuis mini di bawah.'],
+ mascot:'Tiga, dua, satu, meluncur! Ayo mulai petualangan.', openSay:'Siap, penjelajah? Ini misimu untuk planet ini.',
+ items:[
+{n:'Merkurius',ic:'merkurius',col:'#6a5aa8',mats:['Planet ke-1','Paling kecil','Tidak punya bulan','Penuh kawah'],steps:['Cari Merkurius, planet terdekat dari Matahari.','Bayangkan permukaannya penuh kawah seperti Bulan.','Ingat: satu tahun di sana cuma sekitar 88 hari Bumi.','Gambar Merkurius dengan krayon abu-abu.'],why:'Merkurius sangat cepat mengelilingi Matahari, satu putaran hanya sekitar 88 hari Bumi.'},
+{n:'Venus',ic:'venus',col:'#c77a1a',mats:['Planet ke-2','Paling panas','Awan tebal','Tidak punya bulan'],steps:['Cari Venus yang tampak terang di langit.','Bayangkan awan tebal yang menyelimutinya.','Ingat: satu hari di Venus lebih lama dari satu tahunnya.','Gambar Venus dengan krayon kuning oranye.'],why:'Venus lebih panas dari Merkurius meski lebih jauh dari Matahari, karena selimut gasnya yang tebal menahan panas.'},
+{n:'Bumi',ic:'bumi',col:'#2a79c9',mats:['Planet ke-3','Rumah kita','Punya 1 bulan','Ada air dan udara'],steps:['Cari Bumi, planet biru tempat kita tinggal.','Lihat lautan biru dan daratan hijau.','Ingat Bulan, teman setia yang mengelilingi Bumi.','Ucapkan terima kasih pada Bumi dan jaga kebersihannya.'],why:'Sekitar 70 persen permukaan Bumi tertutup air. Bumi satu-satunya planet yang kita tahu punya kehidupan.'},
+{n:'Mars',ic:'mars',col:'#b9502e',mats:['Planet ke-4','Planet merah','Punya 2 bulan kecil','Gunung tinggi'],steps:['Cari Mars, planet yang tampak kemerahan.','Bayangkan tanah merah penuh debu.','Cari Olympus Mons, gunung tertinggi di tata surya.','Gambar Mars dengan krayon merah bata.'],why:'Mars tampak merah karena tanahnya mengandung karat. Gunung Olympus Mons di sana tingginya sekitar 22 kilometer.'},
+{n:'Jupiter',ic:'jupiter',col:'#a56a2c',mats:['Planet ke-5','Planet terbesar','Banyak bulan','Bintik Merah Besar'],steps:['Cari Jupiter, raksasa bergaris-garis cokelat.','Temukan Bintik Merah Besar, badai raksasa.','Ingat: Jupiter planet gas, tidak punya daratan.','Gambar garis-garis Jupiter dengan krayon cokelat.'],why:'Jupiter sangat besar, lebih dari 1.000 Bumi bisa muat di dalamnya. Bulannya lebih dari 90.'},
+{n:'Saturnus',ic:'saturnus',col:'#a98a2c',mats:['Planet ke-6','Punya cincin','Banyak bulan','Planet gas'],steps:['Cari Saturnus dengan cincin indahnya.','Bayangkan cincin dari kepingan es dan batu.','Ingat: Saturnus juga planet gas.','Gambar cincin Saturnus yang melingkar.'],why:'Cincin Saturnus terbuat dari kepingan es dan batu, dari yang sekecil butiran sampai sebesar rumah.'},
+{n:'Uranus',ic:'uranus',col:'#1f8f86',mats:['Planet ke-7','Biru kehijauan','Sangat dingin','Berputar miring'],steps:['Cari Uranus yang berwarna biru kehijauan.','Bayangkan planet yang berputar miring.','Ingat: Uranus sangat dingin.','Gambar Uranus dengan krayon hijau toska.'],why:'Uranus berputar miring, hampir seperti bola yang menggelinding mengelilingi Matahari.'},
+{n:'Neptunus',ic:'neptunus',col:'#2e4fb8',mats:['Planet ke-8','Paling jauh','Biru tua','Angin kencang'],steps:['Cari Neptunus, planet terjauh dari Matahari.','Bayangkan angin sangat kencang di sana.','Ingat: cahaya Matahari di sana sangat redup.','Gambar Neptunus dengan krayon biru tua.'],why:'Satu tahun di Neptunus sama dengan sekitar 165 tahun Bumi, karena jaraknya yang jauh dari Matahari.'}],
+ bonus:[
+{n:'Matahari',ic:'matahari',col:'#c77a1a',mats:['Bintang','Pusat tata surya','Sangat panas','Sumber cahaya'],steps:['Ingat: Matahari itu bintang, bukan planet.','Bayangkan semua planet berputar mengelilinginya.','Jangan pernah menatap Matahari langsung.','Gambar Matahari dengan krayon kuning.'],why:'Cahaya Matahari butuh sekitar 8 menit untuk sampai ke Bumi.'},
+{n:'Bulan',ic:'bulan',col:'#5b5b6b',mats:['Teman Bumi','Penuh kawah','Tanpa udara','Bercahaya di malam hari'],steps:['Lihat Bulan di malam hari.','Cari bayangan kawah di permukaannya.','Ingat: Bulan memantulkan cahaya Matahari.','Gambar bentuk Bulan hari ini.'],why:'Neil Armstrong adalah manusia pertama yang menjejakkan kaki di Bulan, pada tahun 1969.'}],
+ facts:[['☀️','Matahari','Matahari adalah bintang, bukan planet. Cahayanya butuh sekitar 8 menit untuk sampai ke Bumi.'],['🔴','Mars merah','Mars tampak merah karena tanahnya mengandung karat.'],['🪐','Cincin Saturnus','Cincin Saturnus terbuat dari kepingan es dan batu.'],['🌊','Bumi biru','Sekitar 70 persen permukaan Bumi tertutup air, makanya Bumi tampak biru dari angkasa.'],['🌀','Bintik Jupiter','Bintik Merah Besar di Jupiter adalah badai raksasa yang sudah berputar lebih dari 150 tahun.'],['🥶','Neptunus jauh','Neptunus sangat jauh dan dingin, cahaya Matahari di sana sangat redup.']],
+ tahu:{title:'Tahukah Kamu 🤔',sub:'Ketuk untuk melihat jawabannya',list:[['Planet apa yang paling besar?','Jupiter. Lebih dari 1.000 Bumi muat di dalamnya.'],['Planet mana yang berputar miring seperti menggelinding?','Uranus.'],['Planet apa yang lebih panas dari Merkurius meski lebih jauh dari Matahari?','Venus, karena selimut gasnya yang tebal menahan panas.'],['Pluto itu planet bukan?','Sejak tahun 2006, Pluto disebut planet kerdil, bukan planet.'],['Siapa orang pertama yang berjalan di Bulan?','Neil Armstrong, pada tahun 1969.']]},
+ quiz:[{q:'Planet apa yang dijuluki planet merah?',o:['Venus','Mars','Neptunus'],a:1,e:'Mars tampak merah karena tanahnya mengandung karat.'},{q:'Planet mana yang punya cincin paling terkenal?',o:['Saturnus','Merkurius','Bumi'],a:0,e:'Saturnus terkenal dengan cincin es dan batunya.'},{q:'Bumi adalah planet ke berapa dari Matahari?',o:['Kedua','Ketiga','Keempat'],a:1,e:'Bumi planet ketiga, setelah Merkurius dan Venus.'},{q:'Apa nama bintang pusat tata surya kita?',o:['Bulan','Matahari','Jupiter'],a:1,e:'Matahari adalah bintang di pusat tata surya.'},{q:'Planet terbesar di tata surya?',o:['Jupiter','Mars','Bumi'],a:0,e:'Jupiter adalah planet terbesar.'}]
+};
+
+/* =================== DUNIA HEWAN HEBAT (dari artifact) =================== */
+const IMGH={"lion": "data:image/png;base64,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", "elephant": "data:image/png;base64,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", "whale": "data:image/png;base64,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", "owl": "data:image/png;base64,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", "penguin": "data:image/png;base64,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", "giraffe": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADRCAMAAAC+Xw3/AAAAYFBMVEUAAAD2y1XJhDP6216XYib2yVT2ylXirUbEfC/9vT6hZyf//QZ8eAr1r1qZU6r/f3+WYSb/AAAjHByXYieqVVVxKx2url18fHz6fwT///+0tB///6d/UB2kV6ZrVzGUTqmpA5YqAAAAIHRSTlMC/f4O+Z9Z/v4EEQEFB/wCoQH/XwMFAwICAQMDVBD/YT31BzYAAAd7SURBVHja7Z0Jk6MqEIBRgijoJuZOZmfm///Lx+EB3s4kSO+jq6Zq45oqvvRBAw0gFCRIEA/lzFieW0+YkBwojdlurmlgAZQoPx0OB4bOBpN+Aovklh92Uk7oXtsVqp9cAXHcK47drtbAHdVPToaW/PeM066W/KyfsOYJu4EBYc3PL1VSdtAYygOIcxCj2bkEuZlPSg4FhOeNR5yqnz9vlHQA5OwoL1nNUXUb5Zkd4HFIU1LtPqFbG8mYJoOXm4hmG26dlyepDuX6sHLGvPF0HQD4wbA0QKIiV9uLl+UTVuQdA9ERmZ0RWJA9VpLlJ1hplpHIiyh14K1PSBcpAYLcM6aiFE60yOCLUFEAw8AyCxFNjxqhgiPJENpnHA4GL6QmSGyCiA80igiWlFA4xBAQE9F2oRLUgOwUiEBJCq0vAGYltFFbEzVNq/6AUTMA9pyjaXzLIT60/yQFKgBwJNG8+E+yjMN/kqUc0lH2/wSHIME3j7tBHC0Xj1WCEem2liI0BpJ46yZG4G26wePx+EVHSLivtoVxVyFIcKBRnSSln8nKvq+QL8UxBkI8zbqKHgg9ao18jQYuDsPVFcgRHXejfQmGBHKEDyJ9RAoFD0InFeIrSDGQn8j4+zWepfAHkPDbHZPACL+P+5pMS2iLoA/4ua8elHgKImat1oFgXydU1qrEWxBU9NJGoCAidZol+fOnBfHVR8S6FC7JHEdNghLkL8hACtyJuRKkyuvx7eEvyL7EswqpQBKvJ4H3aAHIH83xROBBkIxYHwg+SIK9X1yYBBFLCpVGkNfzjJMgBGsVSI5v/Ol93cA4iPi/a8E/Jcgn8l/q0RWlnYEIUeugn+hbKAR9QljmUT07jdM0jamlkUy/8f2NbggKCE1jKSntg0ApaFQgFYeQAY1AsKseiKmSAoOqcOpohEJZohrxkbjvIzBBIhm0RNiKwIOI+GvZFVwQaMu4AQQ0SPFvgBA4dVoBBNakKSwQrgeI/e4QJAitEhQKHCRukvgYNEibw9vZL+HAQGJT7B4RUukyYiZHZ0ACCuRuaQQwiGlaKWTTMqKWbVnwQGg9Yu8NETm0nr0/zwgURE39DgxIAIIMl8fiABJA/vcg14myGlAgOIB4DUKtvNFbEM55JoQbu1oLnBkgKlVp5+TJ4+bjlkk88vMmNoeZA/s2ZSr2Q9/1Lgu1D9cubUia2SDaS4L3flGoNU1stHhE+uPEvU9lpHq/y5LKRX9B1CwITpaWX/pqWlyaVLKmiLRxduqRsz+yakd0tJYkbce7XvRz6zF6HeL2Zb77x48wBnKUbOPKJfQKDAGy3xJE9H04eo1smmzt0dq9FH7Wwoul2OiFkmx13EPxMrNqSDaZEypeaFbtcQ/uzSt7PYd0FOdH0PG3cMhNe9xxvCrewuE6CovhUxS9i6Rw6ujkXSBi+zf2Yqbt9+LuhNn7+wxLG9cVomFRnc5bC6M3N5ELP/CCkUY8saHYGvOqoaJRdIqoqzIIPK0QubSmZ6ziVWP3uD1qy80OcI6LZU3rLEDPvFy/LUBiN50JnswVzabNk1j1A2mjEsIzJ0kWmXOP4SqNGer6ZWVbLopOJ0Hi1AaJ14OIY9xiFyCPyUOZOiDxD0FczERM7yVcBzLoI5E6fBIYiBW1aHto48HBibn75UFr1tmH5oCVbR2e+cYgXZUsmG9Me8Wa6uzfy1YHnNQ5iUVCOy8NpS2096KwrVPOHCyDkKGMSYpN0ikBorEqC4rnUzAq3b3coh+h1hqBbnG3kqnKDuN0AYmbc6X7q+U9j6V9IzKjwCyJtK2Suc+14nS2J7ejGZ23LRcBGHOyGmRdUJanGjPuvhJjrOByLJecTYo/HB2RfctGfu+FljUHkqCTm2sWnl2VVKWjEw1cZVpY3bTAytLBdBDpmU46ObS1uskZEIyuz4N5FZHT81WHe+1BkhkOMRvEtG0xL5cU4nShYYmfKa9sK0c+LipU/f1cJ4KxGBwW8oISN5dG8B9M0tE5+2tWEtWFRG6u8eBP/J7pUq5Xi6VtPZ1c43FH7yCplnbLG2suh3IQgzF52zrPWdlWzuCtsvdA9AUYbuSBX07STJbm2rZcFT89X21eDchV363CfDrp74cgzL4hyv2Z3S9b1FWDknL7nd2/BMnl9Y+nSw4GhCR4EKRKHJ0Z129BiF3x1YKUeSFvsXN2H+qvQUT9+SDIpbok8fT+OccBkPWuP6aRC/pbXZH41w2JDYLGb31YB1KWeXtDalk6B7HtZNC1kwSbc64jIKxRiFQJ20AjVquy+uYwJTirq0zAgfQr++QtdZzPg+TIMC0nIXgSpMwM4ftSG3u2QCPCwdv7UDdxdjxfXL0IRKS/1X2oji47fxtIiS6S5HBxdJHo20CUfV3cdIbvBrlUf/A1gjY7oCmABJAAEkACSAAJIAEkgASQABJAAkgACSABJIC8ByTyBcQqQSOos442z07QFftxXoJZFYitUlo6rsaxrxB321t7cs5x57CZ+uPUbKf9lVpD5GPbQ14YsQ/NiRYcoUMqT1/xlSBBggQJEiRIkCBBgmj5D31LaOJ5m5sCAAAAAElFTkSuQmCC", "cat": "data:image/png;base64,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", "camel": "data:image/png;base64,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"};
+const MASCOT_H="data:image/png;base64,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";
+const ANIM=[{"k": "lion", "n": "Singa", "c": "#a56923", "fakta": "Singa hidup berkelompok yang disebut kawanan, dan mereka berburu bersama-sama.", "tahu": "Auman singa bisa terdengar sampai sekitar 8 km jauhnya.", "q": "Siapa si raja savana?", "o": ["Singa", "Penguin", "Lumba-lumba"], "a": 0}, {"k": "elephant", "n": "Gajah", "c": "#6e7da0", "fakta": "Belalai gajah punya ribuan otot. Dipakai untuk minum, mengambil makanan, dan menyapa teman.", "tahu": "Gajah adalah hewan darat terbesar di dunia.", "q": "Apa yang dipakai gajah untuk minum?", "o": ["Ekor", "Belalai", "Telinga"], "a": 1}, {"k": "whale", "n": "Lumba-lumba", "c": "#2378aa", "fakta": "Lumba-lumba bernapas dengan paru-paru lewat lubang di atas kepalanya.", "tahu": "Saat tidur, lumba-lumba mengistirahatkan satu sisi otaknya secara bergantian.", "q": "Lumba-lumba termasuk hewan apa?", "o": ["Ikan", "Mamalia", "Reptil"], "a": 1}, {"k": "owl", "n": "Burung Hantu", "c": "#78462a", "fakta": "Burung hantu aktif di malam hari dan punya penglihatan serta pendengaran yang tajam.", "tahu": "Burung hantu bisa memutar kepalanya sekitar 270 derajat.", "q": "Kapan burung hantu aktif?", "o": ["Siang hari", "Malam hari", "Sore hari"], "a": 1}, {"k": "penguin", "n": "Penguin", "c": "#2a3250", "fakta": "Penguin tidak bisa terbang, tetapi jago sekali berenang.", "tahu": "Sayap penguin berfungsi seperti sirip untuk berenang di air.", "q": "Penguin tidak bisa apa?", "o": ["Berenang", "Terbang", "Berjalan"], "a": 1}, {"k": "giraffe", "n": "Jerapah", "c": "#be8723", "fakta": "Jerapah adalah hewan darat tertinggi, tingginya bisa sampai sekitar 5 meter.", "tahu": "Jerapah punya 7 ruas tulang leher, sama banyak dengan manusia.", "q": "Berapa ruas tulang leher jerapah?", "o": ["3", "7", "12"], "a": 1}, {"k": "cat", "n": "Kucing", "c": "#c8742a", "fakta": "Kucing jago melompat dan hampir selalu mendarat dengan kaki lebih dulu.", "tahu": "Kumis kucing membantu dia merasakan ruang sempit di sekitarnya.", "q": "Untuk apa kumis kucing?", "o": ["Merasakan sekitar", "Untuk terbang", "Untuk minum"], "a": 0}, {"k": "camel", "n": "Onta", "c": "#a07838", "fakta": "Punuk onta menyimpan lemak sebagai cadangan makanan, bukan air.", "tahu": "Onta bisa minum banyak sekali air sekaligus, jadi kuat berjalan jauh di gurun.", "q": "Apa yang disimpan di punuk onta?", "o": ["Air", "Lemak", "Pasir"], "a": 1}];
+SERIES.hewan={
+ tab:'🦁 Hewan', body:'hewan', layout:'card',
+ lab:{tag:'HEWAN',num:'Hewan',fact:'✨ Fakta seru',why:'⭐ TAHUKAH KAMU',quiz:'❓ Kuis mini',adult:'🐾 Belajar bersama keluarga',go:'Hore!'},
+ hero:`<div class="pill indo"><span>🐾</span> DUNIA HEWAN HEBAT <b>SERI ANAK</b></div>
+ <div class="hello" style="margin-top:40px"><small>SELAMAT DATANG DI</small><h1>DUNIA HEWAN<br>HEBAT! 🐾</h1></div>
+ <img class="hewan-m mascot" src="${MASCOT_H}" alt="Maskot Dunia Hewan Hebat">
+ <div class="big" style="margin-top:22px;color:#e0783a">8 HEWAN<br>HEBAT!</div>`,
+ chips:[['🐾 8 Hewan Hebat','main'],['❓ Kuis Mini','kuis']],
+ mainTitle:'BERKENALAN DENGAN<br>PARA HEWAN HEBAT! 🐾', mainSub:'Ketuk salah satu hewan untuk lihat fakta seru, tahukah kamu, dan kuis mini',
+ bonusTitle:'', factsTitle:'', note:null,
+ lines:['Halo, teman-teman. Ini Dunia Hewan Hebat, seri belajar tentang hewan-hewan istimewa.','Ketuk salah satu hewan untuk lihat fakta seru, tahukah kamu, dan kuis mini.','Ada singa, gajah, lumba-lumba, dan burung hantu.','Ada juga penguin, jerapah, kucing, dan onta.'],
+ mascot:'Hai! Aku siap menemani kamu belajar.', openSay:'Ayo kenalan dengan hewan hebat ini.',
+ items:ANIM.map(a=>({n:a.n,img:IMGH[a.k],col:a.c,fact:a.fakta,why:a.tahu,q:a.q,o:a.o,a:a.a,em:['🐾','✨','⭐','🌿']})),
+ bonus:[], facts:null, tahu:null,
+ quiz:ANIM.slice(0,5).map(a=>({q:a.q,o:a.o,a:a.a,e:'Jawaban yang benar: '+a.o[a.a]+'.'}))
+};
+
+/* =================== ANGKA & BENTUK AJAIB =================== */
+const ANG=`<svg class="gara mascot" viewBox="0 0 200 220" aria-label="Si Angka. Ketuk untuk menyapa"><ellipse cx="100" cy="208" rx="52" ry="8" fill="rgba(60,40,100,.15)"/><path d="M60 186l-10 16h26zM140 186l10 16h-26z" fill="#f2873a"/><circle cx="100" cy="122" r="70" fill="#ffcf5a"/><ellipse cx="100" cy="146" rx="44" ry="36" fill="#ffe9a8"/><polygon points="100,14 108,34 130,36 113,50 119,72 100,60 81,72 87,50 70,36 92,34" fill="#7a5bb5"/><circle cx="76" cy="108" r="7" fill="#3b2a63"/><circle cx="124" cy="108" r="7" fill="#3b2a63"/><circle cx="78" cy="106" r="2.2" fill="#fff"/><circle cx="126" cy="106" r="2.2" fill="#fff"/><circle cx="62" cy="128" r="9" fill="#f9a8c1" opacity=".8"/><circle cx="138" cy="128" r="9" fill="#f9a8c1" opacity=".8"/><path d="M82 132q18 18 36 0" stroke="#3b2a63" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M34 122q-22 10-14 34" stroke="#ffcf5a" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M166 122q22 10 14 34" stroke="#ffcf5a" stroke-width="14" fill="none" stroke-linecap="round"/><text x="16" y="70" font-size="34" font-weight="800" fill="#ef5b5b">1</text><text x="162" y="82" font-size="34" font-weight="800" fill="#2bb8c9">2</text><text x="150" y="36" font-size="30" font-weight="800" fill="#f2b81c">+</text><text x="26" y="34" font-size="26" font-weight="800" fill="#25b9a0">3</text></svg>`;
+const AG=(n,emo,col,mats,steps,why,q,o,a,fact)=>({n,emo,col,mats,steps,why,q,o,a,fact,em:['1️⃣','2️⃣','➕','⭐','✨']});
+SERIES.angka={
+ tab:'🔢 Angka', body:'angka', layout:'card',
+ lab:{tag:'PELAJARAN',num:'Pelajaran',mats:'🎬 Isi video',steps:'📖 Naskah singkat',fact:'✨ Fakta seru',why:'🎯 Tujuan belajar',quiz:'❓ Kuis mini',adult:'👨‍👩‍👧 Belajar bersama keluarga',go:'Hore!'},
+ hero:`<div class="pill"><span>✨</span> ANGKA &amp; BENTUK AJAIB <b>SERI ANAK</b></div>
+ <div class="hello" style="margin-top:40px"><small>SELAMAT DATANG DI</small><h1>ANGKA &amp; BENTUK<br>AJAIB! ✨</h1></div>
+ ${ANG}
+ <div class="big" style="margin-top:22px">11 PELAJARAN<br>SERU!</div>`,
+ chips:[['🔢 9 Pelajaran','main'],['✨ Fakta Seru','fakta'],['❓ Kuis Mini','kuis'],['🎁 2 Bonus','bonus']],
+ mainTitle:'AYO BELAJAR<br>BERHITUNG! 🔢', mainSub:'Ketuk pelajaran untuk melihat isi, fakta seru, dan kuis mini',
+ bonusTitle:'🎁 2 BONUS: tantangan seru', factsTitle:'FAKTA SERU ✨', note:null,
+ lines:['Halo, teman-teman! Hari ini kita belajar berhitung bersama.','Ketuk pelajaran untuk melihat isi, fakta seru, dan kuis mini.','Ada angka, bentuk, tambah, kurang, dan pola.','Ada juga jam, uang, dan dua bonus seru.'],
+ mascot:'Halo! Aku Si Angka. Ayo berhitung bersama!', openSay:'Ayo simak pelajarannya, lalu jawab kuis mininya.',
+ items:[
+  AG('Ayo Berhitung','🎬','#7a5bb5',['Halo, teman-teman!','Ayo hitung bintang!','Fakta seru'],['Halo teman-teman! Hari ini kita belajar berhitung bersama.','Ayo hitung bintangnya. Satu, dua, tiga, empat, lima. Ada lima bintang!','Kita bisa menghitung apa saja. Bintang, buah, bahkan jari tanganmu.'],'Berkenalan dengan maskot dan berani mencoba menghitung benda.','Berapa jumlah apel? 🍎🍎🍎',['2','3','4'],1,'Kita bisa menghitung apa saja: bintang, buah, bahkan jari tangan!'),
+  AG('Angka 1 sampai 10','🔢','#ef5b5b',['Angka 1 sampai 10','Hitung anak ayam','Fakta seru'],['Ayo kenalan dengan angka satu sampai sepuluh!','Satu, dua, tiga, empat, lima, enam, tujuh, delapan, sembilan, sepuluh. Ada sepuluh anak ayam!','Angka nol artinya tidak ada. Kalau tidak ada anak ayam, jumlahnya nol.'],'Mengenal dan menghitung angka 1 sampai 10.','Setelah angka 7, angka berapa?',['6','8','9'],1,'Angka 0 artinya tidak ada.'),
+  AG('Bentuk di Sekitarku','🔺','#2bb8c9',['Kenalan dengan bentuk','Cari di sekitar kita','Fakta seru'],['Ini lingkaran, ini segitiga, dan ini persegi.','Bola berbentuk lingkaran. Tenda berbentuk segitiga. Jendela berbentuk persegi.','Segitiga punya tiga sisi. Persegi punya empat sisi yang sama panjang.'],'Mengenal lingkaran, segitiga, dan persegi di benda sehari-hari.','Bentuk mana yang punya 3 sisi?',['Lingkaran','Segitiga','Persegi'],1,'Segitiga punya 3 sisi. Persegi punya 4 sisi sama panjang.'),
+  AG('Penjumlahan Seru','➕','#f2b81c',['Menggabungkan benda','2 + 3 = ?','Fakta seru'],['Menjumlah artinya menggabungkan. Ayo kita coba!','Dua bintang ditambah tiga bintang. Kita gabungkan semuanya: satu, dua, tiga, empat, lima. Hasilnya lima!','Dua tambah tiga sama dengan tiga tambah dua. Hasilnya tetap lima.'],'Memahami penjumlahan sebagai menggabungkan dua kelompok.','Berapa 3 + 1?',['3','4','5'],1,'Urutan boleh ditukar, hasilnya sama.'),
+  AG('Pengurangan Seru','➖','#25b9a0',['Mengambil sebagian','5 − 2 = ?','Fakta seru'],['Mengurang artinya mengambil sebagian. Lalu kita hitung sisanya.','Ada lima kue. Dimakan dua. Sisa berapa? Tinggal tiga!','Benda yang diambil tidak kita hitung lagi. Kita hitung yang tersisa saja.'],'Memahami pengurangan sebagai mengambil sebagian dan menghitung sisa.','Berapa 4 − 1?',['2','3','5'],1,'Yang dicoret tidak dihitung lagi. Hitung yang tersisa saja.'),
+  AG('Lebih Banyak dan Sedikit','⚖️','#ee7fa8',['Mana yang lebih banyak?','Bandingkan ikan','Fakta seru'],['Kadang kita perlu membandingkan. Mana yang lebih banyak, mana yang lebih sedikit?','Ikan biru ada tiga. Ikan oranye ada enam. Enam lebih banyak dari tiga. Tiga lebih sedikit dari enam.','Kalau jumlahnya sama, kita sebut sama banyak.'],'Membandingkan dua kelompok benda: lebih banyak, lebih sedikit, sama banyak.','Mana yang lebih banyak?',['2 stroberi','5 stroberi','Sama banyak'],1,'Kalau jumlahnya sama, kita sebut sama banyak.'),
+  AG('Pola dan Urutan','🔁','#f59a2b',['Apa itu pola?','Merah, biru, ...','Pola angka'],['Pola adalah susunan yang berulang. Ayo kita cari polanya!','Merah, biru, merah, biru, merah, lalu apa? Biru!','Satu, dua, tiga, satu, dua, tiga, lalu? Kembali ke satu!'],'Mengenali pola berulang dan menebak benda berikutnya.','Pola: hijau, kuning, hijau, kuning, hijau, ... Berikutnya?',['Hijau','Kuning'],1,null),
+  AG('Mengenal Waktu','⏰','#3b7de0',['Mengenal jam','Pukul tiga','Pukul tujuh'],['Ini jam dinding. Jarum pendek menunjukkan jam. Jarum panjang menunjukkan menit.','Jarum panjang di angka dua belas, jarum pendek di angka tiga. Ini pukul tiga!','Pukul tujuh pagi. Waktunya berangkat sekolah!'],'Membaca jam tepat: jarum pendek menunjukkan jam.','Jarum panjang di 12, jarum pendek di 9. Pukul berapa?',['Pukul 9','Pukul 12','Pukul 3'],0,'Pukul tujuh pagi, waktunya berangkat sekolah!'),
+  AG('Uang dan Berbelanja','🛒','#4caf50',['Beli permen','Kembalian','Fakta seru'],['Dua koin seribu rupiah jadi dua ribu rupiah. Cukup untuk membeli permen!','Bayar lima ribu, es krim dua ribu. Kembaliannya tiga ribu rupiah.','Sebelum membeli, cek dulu apakah uangmu cukup.'],'Mengenal nilai uang sederhana dan menghitung kembalian.','Uangmu Rp5.000. Beli roti Rp3.000. Sisa uangnya?',['Rp1.000','Rp2.000','Rp3.000'],1,'Cek dulu, uangmu cukup atau tidak.')],
+ bonus:[
+  AG('Genap, Ganjil, dan Lompat Dua','🦘','#2f8fd1',['Genap dan ganjil','Lompat dua-dua','Fakta seru'],['Angka genap: dua, empat, enam, delapan, sepuluh. Angka ganjil: satu, tiga, lima, tujuh, sembilan.','Ayo lompat dua-dua: dua, empat, enam, delapan, sepuluh!','Angka genap bisa dibagi dua sama rata, tanpa sisa.'],'Membedakan bilangan genap dan ganjil, serta menghitung lompat dua-dua.','Mana yang angka genap?',['5','6','9'],1,'Angka genap bisa dibagi dua sama rata, tanpa sisa.'),
+  AG('Tantangan Angka Ajaib','✨','#e05252',['Trik angka ajaib','3 → 5 → 4','Giliranmu!'],['Siap melihat trik angka ajaib? Perhatikan baik-baik!','Pikirkan angka tiga. Tambah dua, jadi lima. Kurangi satu, jadi empat!','Sekarang giliranmu! Mulai dari dua, tambah tiga, lalu kurangi satu. Berapa hasilnya?'],'Menggabungkan tambah dan kurang dalam satu tantangan berantai.','2 + 3 − 1 = ?',['3','4','5'],1,'Mulai dari 2, tambah 3, lalu kurangi 1.')],
+ facts:[['0️⃣','Angka nol','Angka 0 artinya tidak ada.'],['🔺','Segitiga','Segitiga punya 3 sisi. Persegi punya 4 sisi sama panjang.'],['🤝','Urutan tambah','Dua tambah tiga sama dengan tiga tambah dua. Hasilnya tetap lima.'],['🍪','Mengurang','Benda yang diambil tidak dihitung lagi. Hitung yang tersisa saja.'],['⚖️','Sama banyak','Kalau jumlahnya sama, kita sebut sama banyak.'],['✌️','Genap','Angka genap bisa dibagi dua sama rata, tanpa sisa.']],
+ tahu:null,
+ quiz:[{q:'Setelah angka 7, angka berapa?',o:['6','8','9'],a:1,e:'Setelah 7 adalah 8.'},{q:'Berapa 3 + 1?',o:['3','4','5'],a:1,e:'Tiga ditambah satu sama dengan empat.'},{q:'Berapa 4 − 1?',o:['2','3','5'],a:1,e:'Empat dikurangi satu sama dengan tiga.'},{q:'Jarum panjang di 12, jarum pendek di 9. Pukul berapa?',o:['Pukul 9','Pukul 12','Pukul 3'],a:0,e:'Jarum pendek menunjukkan jam, jadi pukul 9.'},{q:'Uangmu Rp5.000. Beli roti Rp3.000. Sisa uangnya?',o:['Rp1.000','Rp2.000','Rp3.000'],a:1,e:'5.000 dikurangi 3.000 sama dengan 2.000.'}]
+};
+
+
+/* =================== PEMUTAR ANIMASI ANGKA =================== */
+const em=(e,n,badge=true,extra)=>Array.from({length:n},(_,i)=>Object.assign({t:e,b:badge?String(i+1):''},extra&&extra(i)||{}));
+const op=t=>({t,cls:'op'}), res=t=>({t,cls:'res'}), big=t=>({t,cls:'big'}), num=(t,c='')=>({t:String(t),cls:'num '+c});
+const nums=(a,b)=>{const r=[];for(let i=a;i<=b;i++)r.push(num(i));return r};
+const svg=(inner)=>'<svg viewBox="0 0 60 60" width="60" height="60">'+inner+'</svg>';
+const SH={c:svg('<circle cx="30" cy="30" r="26" fill="#3cc0d0"/><circle cx="23" cy="24" r="3" fill="#3b2a63"/><circle cx="37" cy="24" r="3" fill="#3b2a63"/><path d="M22 36q8 8 16 0" stroke="#3b2a63" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+t:svg('<polygon points="30,6 57,54 3,54" fill="#f26b6b"/><circle cx="24" cy="38" r="3" fill="#3b2a63"/><circle cx="36" cy="38" r="3" fill="#3b2a63"/><path d="M25 46q5 5 10 0" stroke="#3b2a63" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+s:svg('<rect x="6" y="6" width="48" height="48" rx="5" fill="#8bd04a"/><circle cx="21" cy="25" r="3" fill="#3b2a63"/><circle cx="39" cy="25" r="3" fill="#3b2a63"/><path d="M22 38q8 8 16 0" stroke="#3b2a63" stroke-width="3" fill="none" stroke-linecap="round"/>')};
+function clock(h){
+  let c='<svg viewBox="0 0 120 120" width="110" height="110"><circle cx="60" cy="60" r="55" fill="#fff" stroke="#7a5bb5" stroke-width="6"/>';
+  for(let i=1;i<=12;i++){const a=i*Math.PI/6;c+=`<text x="${60+40*Math.sin(a)}" y="${60-40*Math.cos(a)+5}" font-size="13" font-weight="800" text-anchor="middle" fill="#3b2a63">${i}</text>`}
+  const ha=(h%12)*30*Math.PI/180;
+  c+=`<line x1="60" y1="60" x2="${60+26*Math.sin(ha)}" y2="${60-26*Math.cos(ha)}" stroke="#e8553e" stroke-width="6" stroke-linecap="round"/>`;
+  c+='<line x1="60" y1="60" x2="60" y2="22" stroke="#2f8fd1" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="60" r="5" fill="#3b2a63"/></svg>';
+  return c}
+const Q4=(n)=>({head:'Kuis mini!',rows:[[big('❓')]],narasi:n});
+const SC_ANGKA=[
+/* pilot */[
+ {head:'Halo, teman-teman!',rows:[[big('👋')]],narasi:'Halo teman-teman! Hari ini kita belajar berhitung bersama.'},
+ {head:'Ayo hitung bintang!',rows:[em('⭐',5)],narasi:'Ayo hitung bintangnya. Satu, dua, tiga, empat, lima. Ada lima bintang!'},
+ {head:'Fakta seru',rows:[[big('💡')]],note:'Kita bisa menghitung apa saja: bintang, buah, bahkan jari tangan!',narasi:'Kita bisa menghitung apa saja. Bintang, buah, bahkan jari tanganmu.'},
+ Q4('Sekarang waktunya kuis mini. Ayo jawab ya!')],
+/* ep1 */[
+ {head:'Angka 1 sampai 10',rows:[nums(1,5),nums(6,10)],narasi:'Ayo kenalan dengan angka satu sampai sepuluh!'},
+ {head:'Hitung anak ayam',rows:[em('🐥',10)],narasi:'Satu, dua, tiga, empat, lima, enam, tujuh, delapan, sembilan, sepuluh. Ada sepuluh anak ayam!'},
+ {head:'Fakta seru',rows:[[num(0)]],note:'Angka 0 artinya tidak ada.',narasi:'Fakta seru! Angka nol artinya tidak ada. Kalau tidak ada anak ayam, jumlahnya nol.'},
+ Q4('Kuis mini! Ayo tebak angkanya.')],
+/* ep2 */[
+ {head:'Kenalan dengan bentuk',rows:[[{h:SH.c,b:'Lingkaran'},{h:SH.t,b:'Segitiga'},{h:SH.s,b:'Persegi'}]],narasi:'Ini lingkaran, ini segitiga, dan ini persegi.'},
+ {head:'Cari di sekitar kita',rows:[[{t:'⚽',b:'lingkaran'},{t:'⛺',b:'segitiga'},{t:'🪟',b:'persegi'}]],narasi:'Bola berbentuk lingkaran. Tenda berbentuk segitiga. Jendela berbentuk persegi.'},
+ {head:'Fakta seru',rows:[[{h:SH.t},{h:SH.s}]],note:'Segitiga punya 3 sisi. Persegi punya 4 sisi sama panjang.',narasi:'Segitiga punya tiga sisi. Persegi punya empat sisi yang sama panjang.'},
+ Q4('Kuis mini! Ayo tebak bentuknya.')],
+/* ep3 */[
+ {head:'Menggabungkan benda',rows:[[big('🤝')]],narasi:'Menjumlah artinya menggabungkan. Ayo kita coba!'},
+ {head:'2 + 3 = ?',rows:[[...em('⭐',2,false),op('+'),...em('⭐',3,false),op('='),res('5')]],narasi:'Dua bintang ditambah tiga bintang. Kita gabungkan semuanya: satu, dua, tiga, empat, lima. Hasilnya lima!'},
+ {head:'Fakta seru',rows:[[num(2),op('+'),num(3),op('='),num(3),op('+'),num(2)]],note:'Urutan boleh ditukar, hasilnya sama.',narasi:'Fakta seru! Dua tambah tiga sama dengan tiga tambah dua. Hasilnya tetap lima.'},
+ Q4('Kuis mini! Ayo jumlahkan.')],
+/* ep4 */[
+ {head:'Mengambil sebagian',rows:[[big('🍪')]],narasi:'Mengurang artinya mengambil sebagian. Lalu kita hitung sisanya.'},
+ {head:'5 − 2 = ?',rows:[[...em('🍪',5,false,i=>i>=3?{cls:'x'}:{})],[num(5),op('−'),num(2),op('='),res('3')]],narasi:'Ada lima kue. Dimakan dua. Sisa berapa? Tinggal tiga!'},
+ {head:'Fakta seru',rows:[[big('💡')]],note:'Yang dicoret tidak dihitung lagi. Hitung yang tersisa saja.',narasi:'Fakta seru! Benda yang diambil tidak kita hitung lagi. Kita hitung yang tersisa saja.'},
+ Q4('Kuis mini! Ayo kurangi.')],
+/* ep5 */[
+ {head:'Mana yang lebih banyak?',rows:[[big('🤔')]],narasi:'Kadang kita perlu membandingkan. Mana yang lebih banyak, mana yang lebih sedikit?'},
+ {head:'Bandingkan ikan',rows:[[...em('🐟',3,false),res('3')],[...em('🐠',6,false),res('6')]],narasi:'Ikan biru ada tiga. Ikan oranye ada enam. Enam lebih banyak dari tiga. Tiga lebih sedikit dari enam.'},
+ {head:'Fakta seru',rows:[[big('💡')]],note:'Kalau jumlahnya sama, kita sebut sama banyak.',narasi:'Fakta seru! Kalau jumlahnya sama, kita sebut sama banyak.'},
+ Q4('Kuis mini! Mana yang lebih banyak?')],
+/* ep6 */[
+ {head:'Apa itu pola?',rows:[[big('🔁')]],narasi:'Pola adalah susunan yang berulang. Ayo kita cari polanya!'},
+ {head:'Merah, biru, ...',rows:[[{t:'🔴'},{t:'🔵'},{t:'🔴'},{t:'🔵'},{t:'🔴'},{t:'❓',cls:'q'}],[{t:'Jawaban:',cls:'op'},{t:'🔵',cls:'res'}]],narasi:'Merah, biru, merah, biru, merah, lalu apa? Biru!'},
+ {head:'Pola angka',rows:[[num(1),num(2),num(3),num(1),num(2),num(3),{t:'?',cls:'q'}],[{t:'Jawaban:',cls:'op'},{t:'1',cls:'res'}]],narasi:'Satu, dua, tiga, satu, dua, tiga, lalu? Kembali ke satu!'},
+ Q4('Kuis mini! Ayo lanjutkan polanya.')],
+/* ep7 */[
+ {head:'Mengenal jam',rows:[[{h:clock(12),b:'Pukul 12'}]],narasi:'Ini jam dinding. Jarum pendek menunjukkan jam. Jarum panjang menunjukkan menit.'},
+ {head:'Pukul tiga',rows:[[{h:clock(3),b:'Pukul 3'}]],narasi:'Jarum panjang di angka dua belas, jarum pendek di angka tiga. Ini pukul tiga!'},
+ {head:'Pukul tujuh',rows:[[{h:clock(7),b:'Pukul 7'}]],note:'Pukul tujuh pagi, waktunya berangkat sekolah!',narasi:'Pukul tujuh pagi. Waktunya berangkat sekolah!'},
+ Q4('Kuis mini! Ayo baca jamnya.')],
+/* ep8 */[
+ {head:'Beli permen',rows:[[{t:'Rp1.000',cls:'coin'},{t:'Rp1.000',cls:'coin'},op('='),res('Rp2.000')],[{t:'🍬',b:'Rp2.000'}]],narasi:'Dua koin seribu rupiah jadi dua ribu rupiah. Cukup untuk membeli permen!'},
+ {head:'Kembalian',rows:[[{t:'Rp5.000',cls:'coin'},op('−'),{t:'Rp2.000',cls:'coin'},op('='),res('Rp3.000')]],narasi:'Bayar lima ribu, es krim dua ribu. Kembaliannya tiga ribu rupiah.'},
+ {head:'Fakta seru',rows:[[big('💡')]],note:'Cek dulu, uangmu cukup atau tidak.',narasi:'Fakta seru! Sebelum membeli, cek dulu apakah uangmu cukup.'},
+ Q4('Kuis mini! Hitung sisa uangnya.')],
+/* bonus1 */[
+ {head:'Genap dan ganjil',rows:[Array.from({length:10},(_,i)=>num(i+1,(i+1)%2?'od':'ev'))],narasi:'Angka genap: dua, empat, enam, delapan, sepuluh. Angka ganjil: satu, tiga, lima, tujuh, sembilan.'},
+ {head:'Lompat dua-dua',rows:[[num(2,'ev'),op('→'),num(4,'ev'),op('→'),num(6,'ev'),op('→'),num(8,'ev'),op('→'),num(10,'ev')],[{t:'🦘',cls:'big'}]],narasi:'Ayo lompat dua-dua: dua, empat, enam, delapan, sepuluh!'},
+ {head:'Fakta seru',rows:[[big('💡')]],note:'Angka genap bisa dibagi dua sama rata, tanpa sisa.',narasi:'Fakta seru! Angka genap bisa dibagi dua sama rata, tanpa sisa.'},
+ Q4('Kuis mini! Mana angka genap?')],
+/* bonus2 */[
+ {head:'Trik angka ajaib',rows:[[big('🎩')]],narasi:'Siap melihat trik angka ajaib? Perhatikan baik-baik!'},
+ {head:'3 → 5 → 4',rows:[[num(3),op('+2'),num(5),op('−1'),res('4')]],narasi:'Pikirkan angka tiga. Tambah dua, jadi lima. Kurangi satu, jadi empat!'},
+ {head:'Giliranmu!',rows:[[num(2),op('+3'),{t:'?',cls:'q'},op('−1'),{t:'?',cls:'q'}]],note:'Mulai dari 2, tambah 3, lalu kurangi 1.',narasi:'Sekarang giliranmu! Mulai dari dua, tambah tiga, lalu kurangi satu. Berapa hasilnya?',dur:6500},
+ Q4('Kuis mini! Cek jawabanmu.')]
+];
+[...SERIES.angka.items,...SERIES.angka.bonus].forEach((x,i)=>{x.scenes=SC_ANGKA[i]});
+
+/* =================== VIDEO ANIMASI UNTUK SEMUA SERI =================== */
+const EV={
+ 'Gunung Meletus':['🥛','🧂','🔴','🌋'],'Balon Mengembang':['🍶','🎈','🔗','💨'],'Susu Pelangi':['🥛','🎨','🧼','🌈'],'Telur Mengapung':['🥛','🧂','⬇️🥚','⬆️🥚'],
+ 'Roket Balon':['🧵','🎈','⏱️','🚀'],'Bunga Berubah Warna':['🎨','✂️','🌸','🌷'],'Lampu Lava':['🍶','💧','💊','🫧'],'Pelangi di Kertas':['✂️','🖍️','💧','🌈'],
+ 'Es Batu Menempel':['🧊','🧵','🧂','⬆️🧊'],'Tetes Air di Koin':['🪙','🤔','💧','🌊'],
+ 'Jakarta':['🗼','🔥','🛗','🌳'],'Bali':['🛕','💃','🌾','🎶'],'Yogyakarta':['🏯','🛍️','🛕','⛰️'],'Danau Toba':['🏞️','🏝️','🏠','⛵'],'Bunaken':['🤿','🐠','🪸','🌊'],
+ 'Raja Ampat':['🏝️','⛰️','🐠','🦜'],'Pulau Komodo':['🦎','🧑‍🏫','🏖️','🌾'],'Gunung Bromo':['🌅','🌋','🏜️','🧑‍🌾'],'Lombok':['🏔️','🏞️','⛵','🧵'],
+ 'Rumah Gadang':['🏠','🪵','🎨','👨‍👩‍👧'],'Tongkonan Toraja':['🏠','🎨','🌾','🐃'],
+ 'Merkurius':['🔭','🌑','⏱️','🖍️'],'Venus':['🔭','☁️','⏳','🖍️'],'Bumi':['🌍','🌊','🌙','💚'],'Mars':['🔭','🏜️','⛰️','🖍️'],'Jupiter':['🔭','🌀','🎈','🖍️'],
+ 'Saturnus':['🔭','🪐','🎈','🖍️'],'Uranus':['🔭','🔄','🥶','🖍️'],'Neptunus':['🔭','💨','🌑','🖍️'],'Matahari':['⭐','🪐','🚫👀','🖍️'],'Bulan':['🌙','🕳️','☀️','🖍️']
+};
+const EMO_H={'Singa':'🦁','Gajah':'🐘','Lumba-lumba':'🐬','Burung Hantu':'🦉','Penguin':'🐧','Jerapah':'🦒','Kucing':'🐱','Onta':'🐪'};
+function genScenes(k,s,x){
+  const sc=[];
+  const intro={sains:`Halo teman-teman! Hari ini kita membuat percobaan ${x.n}. Lakukan bersama orang dewasa ya.`,indo:`Halo teman-teman! Ayo berkunjung ke ${x.n}.`,space:`Halo penjelajah cilik! Ayo berkenalan dengan ${x.n}.`,hewan:`Halo teman-teman! Ayo berkenalan dengan ${x.n}.`}[k];
+  sc.push({head:x.n,rows:[[{h:iconHTML(s,x),cls:'ico'}]],narasi:intro});
+  if(k==='hewan'){
+    sc.push({head:'Fakta seru',rows:[[{t:EMO_H[x.n]||'🐾',cls:'big'}]],narasi:x.fact});
+    sc.push({head:'Tahukah kamu?',rows:[[big('⭐')]],narasi:x.why});
+    sc.push({head:'Kuis mini!',rows:[[big('❓')]],narasi:x.q+' Ayo jawab kuis mini di bawah!'});
+    return sc;
+  }
+  const ev=EV[x.n]||[];
+  const mh={sains:'Alat dan bahan',indo:'Ada apa di sana?',space:'Kenalan singkat'}[k];
+  const mn={sains:'Siapkan alat dan bahan: ',indo:'Di sini ada: ',space:'Kenalan singkat: '}[k];
+  sc.push({head:mh,rows:[x.mats.map(t=>({t,cls:'chp'}))],narasi:mn+x.mats.join(', ')+'.'});
+  const sh={sains:'Langkah',indo:'Jelajah',space:'Misi'}[k];
+  x.steps.forEach((t,i)=>sc.push({head:sh+' '+(i+1),rows:[[{t:String(i+1),cls:'num'},{t:ev[i]||'⭐',cls:'big'}]],narasi:t}));
+  sc.push({head:{sains:'Kenapa bisa begitu?',indo:'Tahukah kamu?',space:'Tahukah kamu?'}[k],rows:[[big('💡')]],narasi:x.why});
+  return sc;
+}
+['sains','indo','space','hewan'].forEach(k=>{const s=SERIES[k];[...s.items,...s.bonus].forEach(x=>{x.scenes=genScenes(k,s,x)})});
+
+let AP=null;
+function apDur(sc){if(sc.dur)return sc.dur;const n=sc.rows.reduce((a,r)=>a+r.length,0);return Math.max(4500,n*600+3200,sc.narasi.length*70+1800)}
+function apBuild(sc){
+  let d=0;const total=sc.rows.reduce((a,r)=>a+r.length,0),xd=(total*0.6+0.5).toFixed(2)+'s';
+  let h=sc.head?`<div class="aphead">${sc.head}</div>`:'';
+  sc.rows.forEach(r=>{
+    h+='<div class="aprow">';
+    r.forEach(t=>{
+      const cls=['apt',t.cls||''].join(' ').trim();
+      const inner=(t.h||t.t||'')+(t.h||t.b!==undefined?`<b>${t.b||''}</b>`:'');
+      h+=`<span class="${cls}" style="--d:${d.toFixed(2)}s;--xd:${xd};animation-delay:${d.toFixed(2)}s">${inner}</span>`;
+      d+=0.6;
+    });
+    h+='</div>';
+  });
+  if(sc.note)h+=`<div class="apnote" style="--nd:${(d+0.2).toFixed(2)}s">${sc.note}</div>`;
+  return h;
+}
+function apStop(){
+  if(AP&&AP.timer){clearTimeout(AP.timer);AP.timer=null}
+  try{speechSynthesis.cancel()}catch(e){}
+  if(AP)AP.playing=false;
+}
+function apPlayBtn(){const b=$('#applay');if(b&&AP)b.textContent=AP.playing?'❚❚':'▶'}
+function apSpeak(t){try{if(!AP.voice||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='id-ID';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function apShow(i,play){
+  if(AP.timer){clearTimeout(AP.timer);AP.timer=null}
+  const sc=AP.sc[i];AP.i=i;
+  $('#apin').innerHTML=apBuild(sc);$('#apcap').textContent=sc.narasi;
+  const dur=apDur(sc);
+  $('#apdots').innerHTML=AP.sc.map((_,k)=>`<i data-k="${k}" class="${k<i?'done':''} ${k===i?'cur':''}" style="--dur:${dur}ms;--ps:${play?'running':'paused'}"></i>`).join('');
+  $('#apcover').hidden=true;
+  if(play){
+    apSpeak(sc.narasi);
+    AP.timer=setTimeout(()=>{
+      if(i<AP.sc.length-1)apShow(i+1,true);
+      else{AP.playing=false;apPlayBtn();const c=$('#apcover');c.hidden=false;c.innerHTML='<div class="pl">↻</div><span>Putar lagi, atau jawab kuis mini di bawah!</span>';AP.ended=true}
+    },dur);
+  }
+}
+function apInit(x){
+  apStop();
+  AP={sc:x.scenes,i:0,playing:false,timer:null,voice:true,ended:false};
+  $('#applayer').style.setProperty('--c',x.col);
+  apShow(0,false);
+  const c=$('#apcover');c.hidden=false;c.innerHTML='<div class="pl">▶</div><span>Putar video</span>';
+  $('#apvoice').textContent='🔊';$('#apvoice').classList.add('on');apPlayBtn();
+}
+function apStart(){AP.playing=true;AP.ended=false;apPlayBtn();apShow(AP.ended?0:(AP.i>=AP.sc.length-1&&!$('#apcover').hidden?0:AP.i),true)}
+$('#apcover').onclick=()=>{if(!AP)return;AP.playing=true;AP.ended=false;apPlayBtn();apShow(AP.i>=AP.sc.length-1?0:AP.i,true)};
+$('#applay').onclick=()=>{
+  if(!AP)return;
+  if(AP.playing){AP.playing=false;if(AP.timer){clearTimeout(AP.timer);AP.timer=null}try{speechSynthesis.cancel()}catch(e){}$$('.apdots i.cur').forEach(e=>e.style.setProperty('--ps','paused'));apPlayBtn();return}
+  $('#apcover').click();
+};
+$('#apprev').onclick=()=>{if(AP)apShow(Math.max(0,AP.i-1),AP.playing)};
+$('#apnext').onclick=()=>{if(AP)apShow(Math.min(AP.sc.length-1,AP.i+1),AP.playing)};
+$('#apdots').onclick=e=>{const i=e.target.closest('i');if(i&&AP)apShow(+i.dataset.k,AP.playing)};
+$('#apvoice').onclick=e=>{if(!AP)return;AP.voice=!AP.voice;e.target.textContent=AP.voice?'🔊':'🔇';e.target.classList.toggle('on',AP.voice);if(!AP.voice){try{speechSynthesis.cancel()}catch(_){}}};
+
+const ORDER=['sains','indo','space','angka','hewan'];
+let cs=SERIES.sains, curKey='sains', cur=0;
+ORDER.forEach(k=>{const s=SERIES[k];s.all=[...s.items,...s.bonus];s.n=s.items.length;s.qi=0;s.sc=0;s.ti=0});
+
+/* =================== BANGUN TAMPILAN =================== */
+function build(k){
+  const s=SERIES[k], v=document.createElement('div');v.className='view';v.id='v-'+k;
+  let h=s.hero;
+  if(s.chips)h+=`<div class="chips">`+s.chips.map(c=>`<button class="chip" data-go="${k}-${c[1]==='bonus'?'bonus':c[1]}">${c[0]}</button>`).join('')+`</div>`;
+  const pl=s.layout==='planet';
+  h+=`<section id="${k}-main"><h2 class="sec-title">${s.mainTitle}</h2><p class="sec-sub">${s.mainSub}</p><div class="${pl?'pgrid':'grid'}" id="${k}-grid"></div>`+(s.bonus.length?`<div class="bonus-head" id="${k}-bonus">${s.bonusTitle}</div><div class="${pl?'pgrid two':'grid'}" id="${k}-gridB"></div>`:'')+`</section>`;
+  if(s.facts)h+=`<section id="${k}-fakta"><h2 class="sec-title">${s.factsTitle}</h2><p class="sec-sub">Ketuk kartu untuk membaliknya</p><div class="facts" id="${k}-facts"></div></section>`;
+  if(s.tahu)h+=`<section id="${k}-tahu"><h2 class="sec-title">${s.tahu.title}</h2><p class="sec-sub">${s.tahu.sub}</p><div class="tk" id="${k}-tk"></div></section>`;
+  h+=`<section id="${k}-kuis"><h2 class="sec-title">KUIS MINI ❓</h2><p class="sec-sub">5 pertanyaan, pilih jawaban yang paling tepat</p><div class="quiz" id="${k}-quiz"></div></section>`;
+  if(s.note)h+=`<div class="safe">${s.note}</div>`;
+  v.innerHTML=h;$('#views').appendChild(v);
+  s.items.forEach((x,i)=>card(k,x,`#${k}-grid`,i,false));
+  if(s.bonus.length)s.bonus.forEach((x,i)=>card(k,x,`#${k}-gridB`,s.n+i,true,i));
+  (s.facts||[]).forEach(f=>{const b=document.createElement('button');b.className='flip';b.innerHTML=`<div class="in"><div class="face fr"><em>${f[0]}</em>${f[1]}</div><div class="face bk">${f[2]}</div></div>`;b.onclick=()=>b.classList.toggle('on');$(`#${k}-facts`).appendChild(b)});
+  if(s.tahu)renderTK(k);
+  renderQ(k);
+}
+function iconHTML(s,x){
+  if(x.img)return `<img src="${x.img}" alt="${x.n}">`;
+  if(x.emo)return S(`<text x="50" y="72" font-size="62" text-anchor="middle">${x.emo}</text>`);
+  return s.layout==='planet'?P[x.ic]:IC[x.ic];
+}
+function card(k,x,box,idx,bonus,bi){
+  const s=SERIES[k],b=document.createElement('button');
+  if(s.layout==='planet'){b.className='planet';b.innerHTML=`<div class="pi">${P[x.ic]}</div><span class="pl">${x.n}</span>`;}
+  else{b.className='card'+(bonus?' bonus':'');b.innerHTML=iconHTML(s,x)+`<div class="nm">${x.n}</div><span class="num">${bonus?'Bonus '+(bi+1):(s.lab.num||'Nomor')+' '+(idx+1)}</span>`;}
+  b.onclick=()=>openSheet(idx);$(box).appendChild(b);
+}
+function renderTK(k){
+  const s=SERIES[k],t=s.tahu,box=$(`#${k}-tk`),it=t.list[s.ti%t.list.length];
+  box.innerHTML=`<span class="lab">⭐ TAHUKAH KAMU?</span><div class="tkq">${it[0]}</div><div class="tka">${it[1]}</div><div class="center" style="margin-top:6px"><button class="btn alt" data-a="show">Lihat jawaban</button> <button class="btn" data-a="next">Berikutnya</button></div>`;
+  box.querySelector('[data-a=show]').onclick=()=>{box.querySelector('.tka').style.display='block'};
+  box.querySelector('[data-a=next]').onclick=()=>{s.ti++;renderTK(k)};
+}
+function renderQ(k){
+  const s=SERIES[k],box=$(`#${k}-quiz`),Q=s.quiz;
+  if(s.qi>=Q.length){
+    const m=s.sc===Q.length?'Luar biasa, kamu hebat! 🏆':s.sc>=3?'Bagus sekali! Coba lagi untuk nilai sempurna.':'Tidak apa-apa, baca lagi lalu ulangi kuisnya.';
+    box.innerHTML=`<div class="score">${s.sc}/${Q.length}</div><p style="text-align:center;font-weight:800;font-size:17px;margin:4px 0 8px">${m}</p><div class="center"><button class="btn" id="${k}-re">Main lagi</button></div>`;
+    $(`#${k}-re`).onclick=()=>{s.qi=0;s.sc=0;renderQ(k)};return;
+  }
+  const q=Q[s.qi];let locked=false;
+  box.innerHTML=`<div class="qprog"><i style="width:${s.qi/Q.length*100}%"></i></div><div class="qtext">${s.qi+1}. ${q.q}</div>`;
+  const ex=document.createElement('div');ex.className='exp';
+  const w=document.createElement('div');w.className='center';
+  const nx=document.createElement('button');nx.className='btn';nx.style.display='none';nx.textContent=s.qi===Q.length-1?'Lihat nilai':'Lanjut';
+  nx.onclick=()=>{s.qi++;renderQ(k)};w.appendChild(nx);
+  q.o.forEach((t,i)=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.onclick=()=>{if(locked)return;locked=true;const os=box.querySelectorAll('.opt');os[q.a].classList.add('ok');if(i===q.a)s.sc++;else b.classList.add('no');ex.style.display='block';ex.textContent=(i===q.a?'Benar! ':'Belum tepat. ')+q.e;nx.style.display='inline-block'};
+    box.appendChild(b);
+  });
+  box.appendChild(ex);box.appendChild(w);
+}
+
+/* =================== SHEET =================== */
+function openSheet(i){
+  cur=i;const s=cs,x=s.all[i],L=s.lab;
+  $('#sn').textContent=i<s.n?`${L.tag} ${i+1} DARI ${s.n}`:`BONUS ${i-s.n+1} DARI ${s.bonus.length}`;
+  $('#st').textContent=x.n;$('#st').style.color=x.col;
+  $('#ico').innerHTML=iconHTML(s,x);
+  $('#demo').querySelectorAll('.b,.sp').forEach(e=>e.remove());
+  $('#go').textContent=L.go;$('#adult').textContent=L.adult;
+  $('#h-mats').textContent=L.mats||'';$('#h-steps').textContent=L.steps||'';$('#h-why').textContent=L.why||'';
+  const vis=(id,on)=>{$('#'+id).style.display=on?'':'none'};
+  vis('g-player',!!x.scenes);$('#demo').style.display=x.scenes?'none':'';
+  if(x.scenes)apInit(x);else apStop();
+  vis('g-mats',!!x.mats);vis('g-steps',!!x.steps);vis('g-fact',!!x.fact);vis('g-why',!!x.why);vis('g-q',!!x.q);
+  if(x.mats)$('#mats').innerHTML=x.mats.map(m=>`<span>${m}</span>`).join('');
+  const ol=$('#steps');ol.innerHTML='';
+  (x.steps||[]).forEach(t=>{const li=document.createElement('li');li.textContent=t;li.onclick=()=>{li.classList.toggle('done');cnt()};ol.appendChild(li)});
+  cnt();
+  if(x.fact){$('#h-fact').textContent=L.fact||'✨ Fakta seru';$('#fact').textContent=x.fact}
+  if(x.why)$('#why').textContent=x.why;
+  if(x.q){$('#h-q').textContent=L.quiz||'❓ Kuis mini';renderSQ(x)}
+  $('#prev').style.visibility=i===0?'hidden':'visible';$('#next').style.visibility=i===s.all.length-1?'hidden':'visible';
+  $('#veil').classList.add('on');$('#sheet').classList.add('on');$('#sheet').scrollTop=0;say(s.openSay);
+}
+function renderSQ(x){
+  const box=$('#sq');box.innerHTML=`<div class="qt">${x.q}</div>`;let done=false;
+  const fb=document.createElement('div');fb.className='exp';
+  x.o.forEach((t,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.onclick=()=>{if(done)return;fb.style.display='block';
+      if(i===x.a){b.classList.add('ok');done=true;fb.textContent='Hebat! Jawabanmu benar! 🎉'}
+      else{b.classList.add('no');fb.textContent='Hampir! Coba lagi ya.'}};
+    box.appendChild(b)});
+  box.appendChild(fb);
+}
+function cnt(){const t=$$('#steps li'),d=$$('#steps li.done');$('#sp').textContent=t.length?`(${d.length}/${t.length} selesai)`:'';if(t.length&&d.length===t.length)say('Hebat! Semua langkah selesai.')}
+function closeSheet(){try{apStop()}catch(e){}
+ $('#veil').classList.remove('on');$('#sheet').classList.remove('on')}
+$('#close').onclick=closeSheet;$('#veil').onclick=closeSheet;
+$('#prev').onclick=()=>openSheet(cur-1);$('#next').onclick=()=>openSheet(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+$('#go').onclick=()=>{
+  const d=$('#demo'),x=cs.all[cur],ic=$('#ico'),fx=x.fx||'spark';
+  if(fx==='slide'){ic.classList.remove('slide');void ic.offsetWidth;ic.classList.add('slide');setTimeout(()=>ic.classList.remove('slide'),1500);return}
+  const em=x.em||(cs===SERIES.space?['⭐','✨','🌟','☄️']:['✨','🌈','💧','⭐']);
+  for(let k=0;k<(fx==='bubbles'?16:9);k++){
+    const e=document.createElement('span');
+    if(fx==='bubbles'){const z=8+Math.random()*16;e.className='b';e.style.cssText=`width:${z}px;height:${z}px;left:${25+Math.random()*50}%;bottom:${10+Math.random()*30}%;animation-delay:${Math.random()*.6}s`}
+    else{e.className='sp';e.textContent=em[k%em.length];e.style.cssText=`left:${12+Math.random()*76}%;top:${20+Math.random()*55}%;animation-delay:${Math.random()*.5}s`}
+    d.appendChild(e);setTimeout(()=>e.remove(),2600);
+  }
+};
+if(true){
+  $('#demo').classList.add('demo');
+}
+
+/* =================== SUBTITLE ala video =================== */
+let li=0,pr=0,paused=false,hold=null;
+const sub=$('#sub'),tr=$('#tr');
+function say(t){sub.textContent=t;pr=0;tr.style.width='0';hold=Date.now()+6000}
+setInterval(()=>{
+  if(paused)return;
+  if(hold&&Date.now()<hold)return;
+  hold=null;pr+=1;tr.style.width=Math.min(100,pr/50*100)+'%';
+  if(pr>=50){pr=0;li=(li+1)%cs.lines.length;sub.textContent=cs.lines[li];tr.style.width='0'}
+},100);
+$('#pp').onclick=function(){paused=!paused;this.classList.toggle('paused',paused)};
+
+/* =================== NAVIGASI =================== */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g){const t=document.getElementById(g.dataset.go);if(t)t.scrollIntoView({behavior:'smooth'});return}
+  const m=e.target.closest('.mascot');
+  if(m){
+    const mo=$('#mouth');
+    if(mo&&curKey==='sains'){mo.setAttribute('d','M75 102q10 14 20 0z');mo.setAttribute('fill','#17376b');setTimeout(()=>{mo.setAttribute('d','M77 104q8 8 16 0');mo.setAttribute('fill','none')},900)}
+    m.classList.add('hop');setTimeout(()=>m.classList.remove('hop'),800);
+    say(cs.mascot);
+  }
+});
+const tabs=$('#tabs');
+ORDER.forEach(k=>{const b=document.createElement('button');b.className='tab';b.textContent=SERIES[k].tab;b.dataset.k=k;b.onclick=()=>setSeries(k);tabs.appendChild(b)});
+function setSeries(k,quiet){
+  curKey=k;cs=SERIES[k];closeSheet();
+  document.body.className=cs.body;
+  $$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+k));
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.k===k));
+  const at=$('.tab.on');if(at)tabs.scrollTo({left:Math.max(0,at.offsetLeft-70),behavior:'smooth'});
+  li=0;pr=0;hold=null;sub.textContent=cs.lines[0];tr.style.width='0';
+  if(!quiet)window.scrollTo({top:0,behavior:'smooth'});
+}
+ORDER.forEach(build);
+/* bintang */
+(function(){const st=$('#stars');for(let i=0;i<70;i++){const d=document.createElement('i');const z=1+Math.random()*3;d.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${-Math.random()*4}s`;st.appendChild(d)}})();
+setSeries('sains',true);
+</script>
+</body>
+</html>
